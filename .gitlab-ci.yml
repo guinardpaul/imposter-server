@@ -23,19 +23,13 @@ build:
   stage: build
   script:
     - ./mvnw $MAVEN_CLI_OPTS clean verify
-
-    # Debug utile
-    - find . -name jacoco.exec -ls
-    - ls -l co-drivin-test-report/target/site/jacoco-aggregate
-    - cat co-drivin-test-report/target/site/jacoco-aggregate/jacoco.csv
-
     - |
       awk -F"," '{
         instr += $4 + $5;
         cov   += $5
       } END {
         printf("Total coverage: %.2f%%\n", 100*cov/instr)
-      }' co-drivin-test-report/target/site/jacoco-aggregate/jacoco.csv
+      }' "./target/site/jacoco/jacoco.csv"
 
   artifacts:
     when: on_success
