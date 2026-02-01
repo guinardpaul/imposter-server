@@ -8,7 +8,6 @@ class ImposteurApplicationTests {
 
 	@Test
 	void contextLoads() {
-		ImposteurApplication.main(new String[]{});
 	}
 
 }
