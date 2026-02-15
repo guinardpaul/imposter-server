@@ -18,7 +18,7 @@ public class RoomUpdatedMapper {
 
     private PlayerView toPlayerView(Player player) {
         return new PlayerView(
-                player.getUserId(),
+                player.getPlayerId(),
                 player.getPlayerName()
         );
     }

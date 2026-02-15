@@ -1,6 +1,5 @@
 package com.guinardpouard.imposteur.websocket;
 
-import com.guinardpouard.imposteur.websocket.dto.RoomCreateMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomCreatedMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomUpdatedMessage;

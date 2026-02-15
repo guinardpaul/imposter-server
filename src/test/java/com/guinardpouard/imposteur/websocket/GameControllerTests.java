@@ -1,9 +1,12 @@
 package com.guinardpouard.imposteur.websocket;
 
-import com.guinardpouard.imposteur.application.RoomService;
+import com.guinardpouard.imposteur.application.GameService;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
-import com.guinardpouard.imposteur.websocket.dto.*;
+import com.guinardpouard.imposteur.websocket.dto.PlayerView;
+import com.guinardpouard.imposteur.websocket.dto.RoomCreatedMessage;
+import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
+import com.guinardpouard.imposteur.websocket.dto.RoomUpdatedMessage;
 import com.guinardpouard.imposteur.websocket.mapper.RoomCreatedMapper;
 import com.guinardpouard.imposteur.websocket.mapper.RoomUpdatedMapper;
 import org.junit.jupiter.api.Test;
@@ -28,7 +31,7 @@ class GameControllerTests {
     @Mock
     private SimpMessagingTemplate messagingTemplate;
     @Mock
-    private RoomService roomService;
+    private GameService gameService;
     @Mock
     private RoomUpdatedMapper roomUpdatedMapper;
     @Mock
