@@ -5,6 +5,7 @@ import com.guinardpouard.imposteur.domain.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +48,23 @@ class InMemoryRoomRepositoryTests {
         roomRepository.delete(room.getRoomId());
         Optional<Room> inMemory = roomRepository.findById(room.getRoomId());
         assertThat(inMemory).isNotPresent();
+    }
+
+    @Test
+    void findAll_should_return_empty_list_when_no_rooms_exists() {
+        List<Room> rooms = roomRepository.findAll();
+        assertThat(rooms).isNotNull();
+        assertThat(rooms).isEmpty();
+    }
+
+    @Test
+    void findAll_should_return_existing_room() {
+        roomRepository.save(new Room("room1"));
+        roomRepository.save(new Room("room2"));
+
+        List<Room> rooms = roomRepository.findAll();
+        assertThat(rooms).isNotNull();
+        assertThat(rooms).hasSize(2);
     }
 
 }

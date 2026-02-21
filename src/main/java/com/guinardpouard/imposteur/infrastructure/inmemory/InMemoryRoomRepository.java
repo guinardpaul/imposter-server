@@ -4,6 +4,7 @@ import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +29,11 @@ public class InMemoryRoomRepository implements RoomRepository {
     @Override
     public void delete(String roomId) {
         rooms.remove(roomId);
+    }
+
+    @Override
+    public List<Room> findAll() {
+        return rooms.values().stream().toList();
     }
 
 }

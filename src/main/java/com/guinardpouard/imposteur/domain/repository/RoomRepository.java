@@ -2,6 +2,7 @@ package com.guinardpouard.imposteur.domain.repository;
 
 import com.guinardpouard.imposteur.domain.model.Room;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository {
@@ -12,4 +13,5 @@ public interface RoomRepository {
 
     void delete(String roomId);
 
+    List<Room> findAll();
 }
