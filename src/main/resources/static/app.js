@@ -6,11 +6,16 @@ stompClient.onConnect = (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/room', (room) => {
-        console.log("on subscribe /topic/room")
+        console.log("[/topic/room] on subscribe")
             let body = JSON.parse(room.body);
-            console.log(body)
+            console.log("[/topic/room]" + body)
             showMessage(body.roomId);
         });
+    stompClient.subscribe('/user/queue/game-info', (room) => {
+        console.log("[/user/queue/game-info] on subscribe")
+        console.log(JSON.parse(room.body));
+        JSON.parse(room.body).forEach(r => showMessage(r.roomId))
+    });
 };
 
 stompClient.onWebSocketError = (error) => {
