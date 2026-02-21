@@ -6,6 +6,7 @@ import com.guinardpouard.imposteur.domain.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -32,6 +33,10 @@ public class GameService {
         roomRepository.save(room);
 
         return room;
+    }
+
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
     }
 
 }
