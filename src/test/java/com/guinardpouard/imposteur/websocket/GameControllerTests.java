@@ -45,7 +45,7 @@ class GameControllerTests {
         Room room = new Room("room1");
         Player p1 = Player.host("user1", "player1");
         room.join(p1);
-        when(roomService.createRoom(anyString(), anyString(), anyString())).thenReturn(room);
+        when(gameService.createRoom(anyString(), anyString(), anyString())).thenReturn(room);
         when(roomUpdatedMapper.toMessage(room)).thenCallRealMethod();
         Principal principal = () -> "user-123";
         RoomCreateMessage msg = new RoomCreateMessage("room 123", "player 456");
@@ -67,7 +67,7 @@ class GameControllerTests {
         // given a created room
         Room room = new Room("room2");
         room.join(Player.player("user1", "player 1"));
-        when(roomService.addPlayerToRoom("user-2", room.getRoomId(), "player 1")).thenReturn(room);
+        when(gameService.addPlayerToRoom("user-2", room.getRoomId(), "player 1")).thenReturn(room);
 
         List<PlayerView> playerViewList = new ArrayList<>();
         playerViewList.add(new PlayerView(room.getPlayers().getFirst().getUserId(), "player 1"));
