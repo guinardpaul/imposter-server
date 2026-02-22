@@ -58,7 +58,7 @@ class GameControllerTests {
     void should_add_player_and_return_all_players_in_the_room_when_joining_a_room() {
         // given a created room
         Room room = new Room("room2");
-        room.addPlayer(new Player("player 1"));
+        room.join(new Player("player 1"));
         when(gameService.addPlayerToRoom(room.getRoomId(), "player 1")).thenReturn(room);
 
         List<PlayerView> playerViewList = new ArrayList<>();
