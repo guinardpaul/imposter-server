@@ -9,11 +9,26 @@ public class Room {
     private final String roomId;
     private final String roomName;
     private final List<Player> players;
+    private GameState state;
 
     public Room(String roomName) {
         this.roomId = UUID.randomUUID().toString();
         this.roomName = roomName;
         this.players = new ArrayList<>();
+
+        state = JoiningState.INSTANCE;
+    }
+
+    public void startGame() {
+        state = state.start(this);
+    }
+
+    public void join(Player player) {
+        state = state.join(this, player);
+    }
+
+    public void endGame() {
+        state = state.end(this);
     }
 
     public String getRoomId() {
@@ -25,10 +40,14 @@ public class Room {
     }
 
     public List<Player> getPlayers() {
-        return players;
+        return List.copyOf(players);
     }
 
-    public void addPlayer(Player player) {
+    void addPlayer(Player player) {
         players.add(player);
+    }
+
+    GameState getState() {
+        return state;
     }
 }

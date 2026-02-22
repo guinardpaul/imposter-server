@@ -29,7 +29,7 @@ public class GameService {
     public Room addPlayerToRoom(String roomId, String playerName) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
-        room.addPlayer(new Player(playerName));
+        room.join(new Player(playerName));
         roomRepository.save(room);
 
         return room;
