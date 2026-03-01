@@ -38,4 +38,7 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
+    public void clearAllRooms() {
+        roomRepository.deleteAll();
+    }
 }

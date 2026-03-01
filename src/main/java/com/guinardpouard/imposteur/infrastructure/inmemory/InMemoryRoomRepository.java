@@ -36,4 +36,9 @@ public class InMemoryRoomRepository implements RoomRepository {
         return rooms.values().stream().toList();
     }
 
+    @Override
+    public void deleteAll() {
+        rooms.clear();
+    }
+
 }

@@ -52,4 +52,17 @@ public class GameController {
         );
     }
 
+    @MessageMapping("/room.clear")
+    public void clearAllRooms() {
+        roomService.clearAllRooms();
+        template.convertAndSend(
+                "/topic/room/",
+                roomService
+                        .getAllRooms()
+                        .stream()
+                        .map(roomUpdatedMapper::toMessage)
+                        .toList()
+        );
+    }
+
 }
