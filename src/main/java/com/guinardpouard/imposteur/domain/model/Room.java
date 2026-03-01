@@ -3,12 +3,14 @@ package com.guinardpouard.imposteur.domain.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Room {
 
     private final String roomId;
     private final String roomName;
     private final List<Player> players;
+    private GameSession currentGame;
     private GameState state;
 
     public Room(String roomName) {
@@ -20,6 +22,7 @@ public class Room {
     }
 
     public void startGame() {
+        this.currentGame = new GameSession(players);
         state = state.start(this);
     }
 
@@ -49,5 +52,9 @@ public class Room {
 
     GameState getState() {
         return state;
+    }
+
+    public GameSession getCurrentGame() {
+        return currentGame;
     }
 }
