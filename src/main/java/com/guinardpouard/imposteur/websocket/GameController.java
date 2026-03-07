@@ -66,12 +66,6 @@ public class GameController {
     @MessageMapping("/room.start-game")
     public void startGame(StartGameMessage msg) {
         Room room = gameService.startGame(msg.roomId());
-        for (Player p : room.getPlayers()) {
-            template.convertAndSendToUser(
-                    "userid",
-                    "/queue/room/" + msg.roomId(),
-                    gameStartedMapper.toMessage(room));
-        }
     }
 
     @MessageMapping("/room.clear")
