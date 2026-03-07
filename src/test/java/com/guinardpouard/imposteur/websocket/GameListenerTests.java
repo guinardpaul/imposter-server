@@ -1,6 +1,6 @@
 package com.guinardpouard.imposteur.websocket;
 
-import com.guinardpouard.imposteur.application.GameService;
+import com.guinardpouard.imposteur.application.RoomService;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.websocket.mapper.RoomUpdatedMapper;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class GameListenerTests {
     @Mock
     private SimpMessagingTemplate template;
     @Mock
-    private GameService gameService;
+    private RoomService roomService;
     @Mock
     private RoomUpdatedMapper roomUpdatedMapper;
     @InjectMocks
@@ -49,7 +49,7 @@ class GameListenerTests {
         SessionSubscribeEvent event =
                 new SessionSubscribeEvent(this, message);
 
-        when(gameService.getAllRooms())
+        when(roomService.getAllRooms())
                 .thenReturn(List.of(
                                 new Room("room1")
                         )
