@@ -10,13 +10,15 @@ class RoomTests {
     @Test
     void should_have_random_id() {
         Room room = new Room("room1");
+
         assertThat(room.getRoomId()).isNotNull();
         assertThat(room.getRoomName()).isNotNull().isEqualTo("room1");
     }
 
     @Test
-    void should_initialize_a_list_of_players() {
+    void should_initialize_with_a_playerList() {
         Room room = new Room("room2");
+
         assertThat(room.getPlayers()).isNotNull().hasSize(0);
     }
 
@@ -24,7 +26,7 @@ class RoomTests {
     void join_should_add_a_player_to_the_room() {
         Room room = new Room("room2");
         assertThat(room.getPlayers()).isNotNull().hasSize(0);
-        room.addPlayer(new Player("player1"));
+        room.join(Player.player("user-1", "player1"));
         assertThat(room.getPlayers()).hasSize(1);
     }
 

@@ -1,12 +1,9 @@
 package com.guinardpouard.imposteur.websocket;
 
-import com.guinardpouard.imposteur.application.GameService;
+import com.guinardpouard.imposteur.application.RoomService;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
-import com.guinardpouard.imposteur.websocket.dto.PlayerView;
-import com.guinardpouard.imposteur.websocket.dto.RoomCreatedMessage;
-import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
-import com.guinardpouard.imposteur.websocket.dto.RoomUpdatedMessage;
+import com.guinardpouard.imposteur.websocket.dto.*;
 import com.guinardpouard.imposteur.websocket.mapper.RoomCreatedMapper;
 import com.guinardpouard.imposteur.websocket.mapper.RoomUpdatedMapper;
 import org.junit.jupiter.api.Test;
@@ -31,7 +28,7 @@ class GameControllerTests {
     @Mock
     private SimpMessagingTemplate messagingTemplate;
     @Mock
-    private GameService gameService;
+    private RoomService roomService;
     @Mock
     private RoomUpdatedMapper roomUpdatedMapper;
     @Mock
@@ -45,7 +42,7 @@ class GameControllerTests {
         Room room = new Room("room1");
         Player p1 = Player.host("user1", "player1");
         room.join(p1);
-        when(gameService.createRoom(anyString(), anyString(), anyString())).thenReturn(room);
+        when(roomService.createRoom(anyString(), anyString(), anyString())).thenReturn(room);
         when(roomUpdatedMapper.toMessage(room)).thenCallRealMethod();
         Principal principal = () -> "user-123";
         RoomCreateMessage msg = new RoomCreateMessage("room 123", "player 456");
@@ -67,7 +64,7 @@ class GameControllerTests {
         // given a created room
         Room room = new Room("room2");
         room.join(Player.player("user1", "player 1"));
-        when(gameService.addPlayerToRoom("user-2", room.getRoomId(), "player 1")).thenReturn(room);
+        when(roomService.addPlayerToRoom("user-2", room.getRoomId(), "player 1")).thenReturn(room);
 
         List<PlayerView> playerViewList = new ArrayList<>();
         playerViewList.add(new PlayerView(room.getPlayers().getFirst().getUserId(), "player 1"));

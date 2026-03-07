@@ -1,6 +1,6 @@
 package com.guinardpouard.imposteur.websocket;
 
-import com.guinardpouard.imposteur.application.GameService;
+import com.guinardpouard.imposteur.application.RoomService;
 import com.guinardpouard.imposteur.websocket.mapper.RoomUpdatedMapper;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.MessageHeaders;
@@ -15,13 +15,13 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 public class GameListener {
 
     private final SimpMessagingTemplate template;
-    private final GameService gameService;
+    private final RoomService roomService;
     private final RoomUpdatedMapper roomUpdatedMapper;
 
-    public GameListener(SimpMessagingTemplate template, GameService gameService,
+    public GameListener(SimpMessagingTemplate template, RoomService roomService,
                         RoomUpdatedMapper roomUpdatedMapper) {
         this.template = template;
-        this.gameService = gameService;
+        this.roomService = roomService;
         this.roomUpdatedMapper = roomUpdatedMapper;
     }
 
@@ -35,7 +35,7 @@ public class GameListener {
             template.convertAndSendToUser(
                     sessionId,
                     "/queue/game-info",
-                     gameService
+                     roomService
                              .getAllRooms()
                              .stream()
                              .map(roomUpdatedMapper::toMessage)

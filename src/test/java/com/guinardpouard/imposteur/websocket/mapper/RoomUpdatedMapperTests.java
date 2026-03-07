@@ -13,8 +13,8 @@ public class RoomUpdatedMapperTests {
     @Test
     void toMessage_should_create_msg_from_Room_domain() {
         Room room = new Room("room1");
-        room.join(new Player("player1"));
-        room.join(new Player("player2"));
+        room.join(Player.host("user-1", "player1"));
+        room.join(Player.player("user-2", "player2"));
 
         RoomUpdatedMapper roomUpdatedMapper = new RoomUpdatedMapper();
         RoomUpdatedMessage msg = roomUpdatedMapper.toMessage(room);

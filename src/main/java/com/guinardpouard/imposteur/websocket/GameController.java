@@ -2,8 +2,8 @@ package com.guinardpouard.imposteur.websocket;
 
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
-import com.guinardpouard.imposteur.application.GameService;
-import com.guinardpouard.imposteur.websocket.mapper.RoomCreatedMapper;
+import com.guinardpouard.imposteur.application.RoomService;
+import com.guinardpouard.imposteur.websocket.dto.RoomUpdatedMessage;
 import com.guinardpouard.imposteur.websocket.mapper.RoomUpdatedMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,13 @@ public class GameController {
     private static final Logger log = LoggerFactory.getLogger(GameController.class);
 
     private final SimpMessagingTemplate template;
-    private final GameService gameService;
+    private final RoomService roomService;
     private final RoomUpdatedMapper roomUpdatedMapper;
     private final RoomCreatedMapper roomCreatedMapper;
 
-    public GameController(SimpMessagingTemplate template, GameService gameService, RoomUpdatedMapper roomUpdatedMapper, RoomCreatedMapper roomCreatedMapper) {
+    public GameController(SimpMessagingTemplate template, RoomService roomService, RoomUpdatedMapper roomUpdatedMapper) {
         this.template = template;
-        this.gameService = gameService;
+        this.roomService = roomService;
         this.roomUpdatedMapper = roomUpdatedMapper;
         this.roomCreatedMapper = roomCreatedMapper;
     }
