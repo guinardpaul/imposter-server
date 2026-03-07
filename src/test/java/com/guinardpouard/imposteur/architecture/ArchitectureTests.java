@@ -43,13 +43,12 @@ class ArchitectureTest {
     void websocket_should_not_depend_on_infrastructure_or_domain_directly() {
         ArchRuleDefinition.noClasses()
                 .that().resideInAPackage("..websocket..")
-                .and().resideOutsideOfPackage("..websocket.mapper..") // <-- exclut mapper
+                .and().resideOutsideOfPackage("..websocket.mapper..")
                 .should().dependOnClassesThat().resideInAnyPackage(
                         "com.guinardpouard.imposteur.domain..",
                         "com.guinardpouard.imposteur.infrastructure.."
                 )
                 .check(classes);
-
     }
 
     @Test
@@ -62,9 +61,8 @@ class ArchitectureTest {
                         "org.springframework..",
                         "com.guinardpouard.imposteur.domain..",
                         "com.guinardpouard.imposteur.websocket.dto..",
-                        "com.guinardpouard.imposteur.websocket.mapper.." // lui-même
+                        "com.guinardpouard.imposteur.websocket.mapper.."
                 )
                 .check(classes);
-
     }
 }

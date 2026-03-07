@@ -7,29 +7,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-public class GameService {
+public class RoomService {
 
-    private final AtomicLong atomicId = new AtomicLong();
     private final RoomRepository roomRepository;
 
     @Autowired
-    public GameService(RoomRepository roomRepository) {
+    public RoomService(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
 
-    public Room createRoom() {
-        Room room = new Room("Room_" + atomicId.incrementAndGet());
+    public Room createRoom(String userId, String roomName, String hostName) {
+        Room room = new Room(roomName);
+        room.join(Player.host(userId, hostName));
         roomRepository.save(room);
         return room;
     }
 
-    public Room addPlayerToRoom(String roomId, String playerName) {
+    public Room addPlayerToRoom(String userId, String roomId, String playerName) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
-        room.join(new Player(playerName));
+        room.join(Player.player(userId, playerName));
         roomRepository.save(room);
 
         return room;

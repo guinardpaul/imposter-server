@@ -1,8 +1,10 @@
 package com.guinardpouard.imposteur.websocket;
 
+import com.guinardpouard.imposteur.websocket.dto.RoomCreateMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomCreatedMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomUpdatedMessage;
+import jakarta.annotation.Nonnull;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,12 +56,17 @@ class GameControllerStompTests {
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
                 blockingQueue.add((RoomCreatedMessage) payload);
             }
         });
 
-        session.send("/app/room.create", null);
+        RoomCreateMessage roomCreateMessage = new RoomCreateMessage(
+                "room 1",
+                "player 1"
+        );
+
+        session.send("/app/room.create", roomCreateMessage);
 
         RoomCreatedMessage message = blockingQueue.poll(2, TimeUnit.SECONDS);
         assertThat(message).isNotNull();
@@ -79,39 +86,43 @@ class GameControllerStompTests {
         // Create room
         session.subscribe("/topic/room", new StompFrameHandler() {
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            public Type getPayloadType(@NonNull StompHeaders headers) {
                 return RoomCreatedMessage.class;
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
                 createdMessagesBlockingQueue.add((RoomCreatedMessage) payload);
             }
         });
-        session.send("/app/room.create", null);
+        RoomCreateMessage roomCreateMessage = new RoomCreateMessage(
+                "room 1",
+                "player 1"
+        );
+        session.send("/app/room.create", roomCreateMessage);
         RoomCreatedMessage message = createdMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
         assertThat(message).isNotNull();
         String roomId = message.roomId();
 
         session.subscribe("/topic/room/" + roomId + "/**", new StompFrameHandler() {
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            public Type getPayloadType(@Nonnull StompHeaders headers) {
                 return RoomUpdatedMessage.class;
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
                 updatedMessagesBlockingQueue.add((RoomUpdatedMessage) payload);
             }
         });
 
-        session.send("/app/room.join", new RoomJoinMessage(roomId, "player 1"));
+        session.send("/app/room.join", new RoomJoinMessage(roomId, "player 2"));
 
         RoomUpdatedMessage updatedMessage = updatedMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
         assertThat(updatedMessage).isNotNull();
         assertThat(updatedMessage.roomId()).isNotNull();
         assertThat(updatedMessage.roomName()).isNotNull();
-        assertThat(updatedMessage.playerViewList()).hasSize(1);
+        assertThat(updatedMessage.playerViewList()).hasSize(2);
     }
 
 }
