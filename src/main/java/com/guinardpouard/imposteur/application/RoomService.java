@@ -3,6 +3,7 @@ package com.guinardpouard.imposteur.application;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,13 @@ public class RoomService {
         room.join(Player.player(userId, playerName));
         roomRepository.save(room);
 
+        return room;
+    }
+
+    public Room startGame(String roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
+        room.startGame();
         return room;
     }
 
