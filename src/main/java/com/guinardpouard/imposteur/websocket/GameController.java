@@ -1,5 +1,6 @@
 package com.guinardpouard.imposteur.websocket;
 
+import com.guinardpouard.imposteur.application.GameService;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.websocket.dto.RoomCreateMessage;
 import com.guinardpouard.imposteur.websocket.dto.RoomJoinMessage;
@@ -22,20 +23,23 @@ public class GameController {
 
     private final SimpMessagingTemplate template;
     private final RoomService roomService;
+    private final GameService gameService;
     private final RoomUpdatedMapper roomUpdatedMapper;
 
-    public GameController(SimpMessagingTemplate template, RoomService roomService, RoomUpdatedMapper roomUpdatedMapper) {
+    public GameController(SimpMessagingTemplate template, RoomService roomService,
+                          GameService gameService, RoomUpdatedMapper roomUpdatedMapper) {
         this.template = template;
         this.roomService = roomService;
+        this.gameService = gameService;
         this.roomUpdatedMapper = roomUpdatedMapper;
     }
 
     @MessageMapping("/room.create")
     public void create(RoomCreateMessage msg, Principal principal) {
-        String userId = principal.getName();
-        Room room = roomService.createRoom(userId, msg.roomName(), msg.playerName());
+        String hostId = principal.getName();
+        Room room = roomService.createRoom(msg.roomName(), hostId);
         RoomUpdatedMessage roomUpdatedMessage = roomUpdatedMapper.toMessage(room);
-        log.info("User {} created room {}", userId, roomUpdatedMessage.roomId());
+        log.info("Host {} created room {}", hostId, roomUpdatedMessage.roomId());
         template.convertAndSend(
                 "/topic/room",
                 roomUpdatedMapper.toMessage(room)
@@ -54,21 +58,9 @@ public class GameController {
     }
 
     @MessageMapping("/room.start-game")
-    public void startGame(StartGameMessage msg) {
-        roomService.startGame(msg.roomId());
-    }
+    public void startGame(StartGameMessage msg, Principal principal) {
+        Room room = gameService.startGame(msg.roomId(), principal.getName());
 
-    @MessageMapping("/room.clear")
-    public void clearAllRooms() {
-        roomService.clearAllRooms();
-        template.convertAndSend(
-                "/topic/room/",
-                roomService
-                        .getAllRooms()
-                        .stream()
-                        .map(roomUpdatedMapper::toMessage)
-                        .toList()
-        );
     }
 
 }

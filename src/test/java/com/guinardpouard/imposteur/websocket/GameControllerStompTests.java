@@ -122,7 +122,7 @@ class GameControllerStompTests {
         assertThat(updatedMessage).isNotNull();
         assertThat(updatedMessage.roomId()).isNotNull();
         assertThat(updatedMessage.roomName()).isNotNull();
-        assertThat(updatedMessage.playerViewList()).hasSize(2);
+        assertThat(updatedMessage.playerViewList()).hasSize(1);
     }
 
 }

@@ -1,34 +1,57 @@
 package com.guinardpouard.imposteur.domain.model;
 
+import java.util.UUID;
+
 public class Player {
 
-    private final String userId;
-    private final String playerName;
-    private final RoomRole role;
+    private final PlayerId id;
+    private final String name;
 
-    private Player(String userId, String playerName, RoomRole role) {
-        this.userId = userId;
-        this.playerName = playerName;
-        this.role = role;
+    private String connectionId;
+
+    private Player(String connectionId, String name) {
+        this.id = PlayerId.newId();
+        this.name = name;
+
+        connect(connectionId);
     }
 
-    public static Player player(String userId, String playerName) {
-        return new Player(userId, playerName, RoomRole.PLAYER);
+    private Player(String connectionId) {
+        this.id = PlayerId.newId();
+        this.name = UUID.randomUUID().toString();
+
+        connect(connectionId);
     }
 
-    public static Player host(String userId, String playerName) {
-        return new Player(userId, playerName, RoomRole.HOST);
+    public static Player player(String connectionId, String playerName) {
+        return new Player(connectionId, playerName);
     }
 
-    public String getUserId() {
-        return userId;
+    public static Player player(String connectionId) {
+        return new Player(connectionId);
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public void connect(String connectionId) {
+        this.connectionId = connectionId;
     }
 
-    public RoomRole getRole() {
-        return role;
+    public void disconnect() {
+        this.connectionId = null;
+    }
+
+    public boolean isConnected() {
+        return connectionId != null;
+    }
+
+    public PlayerId id() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getConnectionId() {
+        return connectionId;
     }
 }

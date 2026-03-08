@@ -1,31 +1,26 @@
 package com.guinardpouard.imposteur.domain.model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GameSession {
 
-    private final Map<Player, Role> roles;
+    private final List<Player> players;
+    private final List<Round> rounds = new ArrayList<>();
 
-    public GameSession(List<Player> players) {
-        this.roles = assignRoles(players);
+    public GameSession(List<Player> players, WordPair wordPair) {
+        this.players = players;
+
+        startNextRound(wordPair);
     }
 
-    private Map<Player, Role> assignRoles(List<Player> players) {
-        Map<Player, Role> map = new HashMap<>();
+    public void startNextRound(WordPair wordPair) {
+        Round round = Round.create(players, wordPair);
 
-        Player impostor = players.get(ThreadLocalRandom.current().nextInt(players.size()));
-
-        for (Player p : players) {
-            map.put(p, p.equals(impostor) ? Role.IMPOSTOR : Role.CREWMATE);
-        }
-        return map;
+        rounds.add(round);
     }
 
-    public boolean isImpostor(Player player) {
-        return roles.get(player) == Role.IMPOSTOR;
+    public Round getCurrentRound() {
+        return rounds.getLast();
     }
-
 }
