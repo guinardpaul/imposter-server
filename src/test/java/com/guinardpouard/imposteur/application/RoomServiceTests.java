@@ -1,7 +1,6 @@
 package com.guinardpouard.imposteur.application;
 
 import com.guinardpouard.imposteur.domain.model.Room;
-import com.guinardpouard.imposteur.domain.model.RoomRole;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,30 +29,24 @@ public class RoomServiceTests {
 
     @Test
     void createRoom_shouldCreate_a_new_room() {
-        Room room = roomService.createRoom("user-123", "room 123", "player 1");
+        Room room = roomService.createRoom("room 123", "user-123");
         assertThat(room).isNotNull();
-        assertThat(room.getPlayers()).hasSize(1);
-        assertThat(room.getPlayers().getFirst().getUserId()).isEqualTo("user-123");
-        assertThat(room.getPlayers().getFirst().getPlayerName()).isEqualTo("player 1");
-        assertThat(room.getPlayers().getFirst().getRole()).isEqualTo(RoomRole.HOST);
+        assertThat(room.getPlayers()).isEmpty();
         assertThat(room.getRoomId()).isNotNull();
         assertThat(room.getRoomName()).isEqualTo("room 123");
     }
 
     @Test
     void addPlayerToRoom_should_add_player_and_return_updated_room() {
-        Room room = roomService.createRoom("user-123", "room 1", "player 1");
+        Room room = new Room("room 1", "user-123");
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
 
         room = roomService.addPlayerToRoom("user-456", room.getRoomId(), "player2");
         assertThat(room).isNotNull();
-        assertThat(room.getPlayers()).hasSize(2);
-        assertThat(room.getPlayers().getFirst().getPlayerName()).isEqualTo("player 1");
-        assertThat(room.getPlayers().getFirst().getUserId()).isEqualTo("user-123");
-        assertThat(room.getPlayers().getFirst().getRole()).isEqualTo(RoomRole.HOST);
-        assertThat(room.getPlayers().getLast().getPlayerName()).isEqualTo("player2");
-        assertThat(room.getPlayers().getLast().getUserId()).isEqualTo("user-456");
-        assertThat(room.getPlayers().getLast().getRole()).isEqualTo(RoomRole.PLAYER);
+        assertThat(room.getPlayers()).hasSize(1);
+        assertThat(room.getPlayers().getFirst().getName()).isEqualTo("player2");
+        assertThat(room.getPlayers().getFirst().getConnectionId()).isEqualTo("user-456");
+        assertThat(room.getPlayers().getFirst().id()).isNotNull();
     }
 
     @Test
@@ -76,8 +69,8 @@ public class RoomServiceTests {
         when(mockRoomRepository.findAll())
                 .thenReturn(
                         List.of(
-                                new Room("room1"),
-                                new Room("room2")
+                                new Room("room1","host1"),
+                                new Room("room2","host2")
                         )
                 );
         List<Room> rooms = roomService.getAllRooms();

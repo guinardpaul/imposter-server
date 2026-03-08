@@ -10,7 +10,7 @@ public class RoomCreatedMapperTests {
 
     @Test
     void toMessage_should_create_msg_from_Room_domain() {
-        Room room = new Room("room1");
+        Room room = new Room("room1", "hostId");
 
         RoomCreatedMapper mapper = new RoomCreatedMapper();
         RoomCreatedMessage msg = mapper.toMessage(room);

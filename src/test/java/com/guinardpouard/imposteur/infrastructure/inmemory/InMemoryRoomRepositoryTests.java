@@ -21,7 +21,7 @@ class InMemoryRoomRepositoryTests {
 
     @Test
     void createRoom_should_add_a_room_to_in_memory_data() {
-        Room room = new Room("room1");
+        Room room = new Room("room1", "hostId");
         roomRepository.save(room);
 
         Optional<Room> inMemory = roomRepository.findById(room.getRoomId());
@@ -31,7 +31,7 @@ class InMemoryRoomRepositoryTests {
 
     @Test
     void findRoomById_should_return_optional_empty_when_room_does_not_exist() {
-        Room room = new Room("room1");
+        Room room = new Room("room1", "hostId");
         roomRepository.save(room);
 
         Optional<Room> inMemory = roomRepository.findById("unknown_room_id");
@@ -40,7 +40,7 @@ class InMemoryRoomRepositoryTests {
 
     @Test
     void deleteRoom_should_delete_a_room_to_in_memory_data() {
-        Room room = new Room("room1");
+        Room room = new Room("room1", "hostId");
         roomRepository.save(room);
         Optional<Room> inMemoryAfterSave = roomRepository.findById(room.getRoomId());
         assertThat(inMemoryAfterSave).isPresent();
@@ -59,8 +59,8 @@ class InMemoryRoomRepositoryTests {
 
     @Test
     void findAll_should_return_existing_room() {
-        roomRepository.save(new Room("room1"));
-        roomRepository.save(new Room("room2"));
+        roomRepository.save(new Room("room1", "hostId1"));
+        roomRepository.save(new Room("room2", "hostId2"));
 
         List<Room> rooms = roomRepository.findAll();
         assertThat(rooms).isNotNull();

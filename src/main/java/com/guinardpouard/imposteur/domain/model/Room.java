@@ -1,29 +1,27 @@
 package com.guinardpouard.imposteur.domain.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
 
 public class Room {
 
     private final String roomId;
     private final String roomName;
-    private final List<Player> players;
+    private final String hostConnectionId;
+    private final Map<PlayerId, Player> players;
     private GameSession currentGame;
     private GameState state;
 
-    public Room(String roomName) {
+    public Room(String roomName, String hostConnectionId) {
         this.roomId = UUID.randomUUID().toString();
         this.roomName = roomName;
-        this.players = new ArrayList<>();
+        this.hostConnectionId = hostConnectionId;
+        this.players = new HashMap<>();
 
         state = JoiningState.INSTANCE;
     }
 
-    public void startGame() {
-        this.currentGame = new GameSession(players);
-        state = state.start(this);
+    public void startGame(String hostId, WordPair wordPair) {
+        state = state.start(this, players.values().stream().toList(), hostId, wordPair);
     }
 
     public void join(Player player) {
@@ -43,11 +41,11 @@ public class Room {
     }
 
     public List<Player> getPlayers() {
-        return List.copyOf(players);
+        return List.copyOf(players.values());
     }
 
     void addPlayer(Player player) {
-        players.add(player);
+        players.put(player.id(), player);
     }
 
     GameState getState() {
@@ -55,6 +53,17 @@ public class Room {
     }
 
     public GameSession getCurrentGame() {
+        if (currentGame == null) {
+            throw new IllegalStateException("Game not started yet");
+        }
         return currentGame;
+    }
+
+    void setCurrentGame(GameSession gameSession) {
+        this.currentGame = gameSession;
+    }
+
+    boolean isHost(String connectionId) {
+        return this.hostConnectionId.equals(connectionId);
     }
 }

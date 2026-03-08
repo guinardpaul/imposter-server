@@ -1,6 +1,7 @@
 package com.guinardpouard.imposteur.websocket.dto;
 
 public record StartGameMessage(
-        String roomId
+        String roomId,
+        String hostId
 ) {
 }
