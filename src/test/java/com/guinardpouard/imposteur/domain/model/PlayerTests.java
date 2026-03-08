@@ -7,21 +7,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PlayerTests {
 
     @Test
-    void a_player_should_have_an_id_and_a_name() {
-        Player player = Player.player("user-1", "player1");
+    void a_player_should_have_a_player_id_a_webSocket_connectionId_and_a_name() {
+        Player player = Player.player("connection-1", "player1");
 
-        assertThat(player.getUserId()).isNotNull();
-        assertThat(player.getPlayerName()).isNotNull().isEqualTo("player1");
-        assertThat(player.getRole()).isEqualTo(RoomRole.PLAYER);
+        assertThat(player.id()).isNotNull();
+        assertThat(player.getName()).isEqualTo("player1");
+        assertThat(player.getConnectionId()).isEqualTo("connection-1");
     }
 
     @Test
-    void a_host_should_have_an_id_and_a_name() {
-        Player host = Player.host("user-1", "host1");
+    void a_player_should_have_an_id_and_a_generated_name() {
+        Player player = Player.player("connection-1");
 
-        assertThat(host.getUserId()).isNotNull().isEqualTo("user-1");
-        assertThat(host.getPlayerName()).isEqualTo("host1");
-        assertThat(host.getRole()).isEqualTo(RoomRole.HOST);
+        assertThat(player.id()).isNotNull();
+        assertThat(player.getName()).isNotBlank();
+        assertThat(player.getConnectionId()).isEqualTo("connection-1");
+    }
+
+    @Test
+    void creating_a_player_should_connect_it() {
+        Player player = Player.player("connection-1", "player1");
+
+        assertThat(player.getConnectionId()).isNotNull();
+        assertThat(player.isConnected()).isTrue();
+    }
+
+    @Test
+    void player_disconnection_should_remove_its_connectionId() {
+        Player player = Player.player("connection-1");
+        assertThat(player.isConnected()).isTrue();
+
+        player.disconnect();
+        assertThat(player.isConnected()).isFalse();
     }
 
 }

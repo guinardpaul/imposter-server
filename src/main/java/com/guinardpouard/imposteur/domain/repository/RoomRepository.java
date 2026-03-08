@@ -14,6 +14,4 @@ public interface RoomRepository {
     void delete(String roomId);
 
     List<Room> findAll();
-
-    void deleteAll();
 }

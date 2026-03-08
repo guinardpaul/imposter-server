@@ -2,6 +2,7 @@ package com.guinardpouard.imposteur.websocket;
 
 import com.guinardpouard.imposteur.application.RoomService;
 import com.guinardpouard.imposteur.domain.model.Player;
+import com.guinardpouard.imposteur.domain.model.PlayerId;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.websocket.dto.*;
 import com.guinardpouard.imposteur.websocket.mapper.RoomCreatedMapper;
@@ -39,10 +40,11 @@ class GameControllerTests {
     @Test
     void should_send_room_to_everyone_when_creating_a_room() {
         // given
-        Room room = new Room("room1");
-        Player p1 = Player.host("user1", "player1");
+        Room room = new Room("room1","hostId");
+        Player p1 = Player.player("user1", "player1");
+        PlayerId pId = p1.id();
         room.join(p1);
-        when(roomService.createRoom(anyString(), anyString(), anyString())).thenReturn(room);
+        when(roomService.createRoom(anyString(), anyString())).thenReturn(room);
         when(roomUpdatedMapper.toMessage(room)).thenCallRealMethod();
         Principal principal = () -> "user-123";
         RoomCreateMessage msg = new RoomCreateMessage("room 123", "player 456");
@@ -50,7 +52,7 @@ class GameControllerTests {
         controller.create(msg, principal);
 
         List<PlayerView> list = new ArrayList<>();
-        list.add(new PlayerView("user1", "player1"));
+        list.add(new PlayerView(pId.getValue(), "player1"));
 
         // then
         verify(messagingTemplate).convertAndSend(
@@ -62,12 +64,12 @@ class GameControllerTests {
     @Test
     void should_add_player_and_return_all_players_in_the_room_when_joining_a_room() {
         // given a created room
-        Room room = new Room("room2");
+        Room room = new Room("room2","hostId");
         room.join(Player.player("user1", "player 1"));
         when(roomService.addPlayerToRoom("user-2", room.getRoomId(), "player 1")).thenReturn(room);
 
         List<PlayerView> playerViewList = new ArrayList<>();
-        playerViewList.add(new PlayerView(room.getPlayers().getFirst().getUserId(), "player 1"));
+        playerViewList.add(new PlayerView(room.getPlayers().getFirst().id().getValue(), "player 1"));
         when(roomUpdatedMapper.toMessage(room)).thenCallRealMethod();
         Principal principal = () -> "user-2";
 

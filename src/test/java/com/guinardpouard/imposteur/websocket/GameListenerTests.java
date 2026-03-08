@@ -51,7 +51,7 @@ class GameListenerTests {
 
         when(roomService.getAllRooms())
                 .thenReturn(List.of(
-                                new Room("room1")
+                                new Room("room1", "hostId")
                         )
                 );
         when(roomUpdatedMapper.toMessage(any())).thenCallRealMethod();
