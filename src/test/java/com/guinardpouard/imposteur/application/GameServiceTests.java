@@ -1,9 +1,11 @@
 package com.guinardpouard.imposteur.application;
 
-import com.guinardpouard.imposteur.domain.model.GameSession;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
+import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
+import com.guinardpouard.imposteur.application.event.PrivateRoomUpdatedMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GameServiceTests {
@@ -22,10 +24,14 @@ class GameServiceTests {
     private GameService gameService;
     @Mock
     private RoomRepository mockRoomRepository;
+    @Mock
+    private GamePublisher mockGamePublisher;
+    @Mock
+    private PrivateRoomUpdateMapper mockMapper;
 
     @BeforeEach
     void setup() {
-        gameService = new GameService(mockRoomRepository);
+        gameService = new GameService(mockRoomRepository, mockGamePublisher, mockMapper);
     }
 
     @Test
@@ -35,13 +41,18 @@ class GameServiceTests {
         room.join(Player.player("p2"));
         room.join(Player.player("p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
+        when(mockMapper.toMessage(any(), any(), any())).thenCallRealMethod();
 
-        Room res = gameService.startGame(room.getRoomId(), "hostConnectionId");
+        gameService.startGame(room.getRoomId(), "hostConnectionId");
 
-        assertThat(res.getCurrentGame()).isNotNull();
-        assertThat(res.getPlayers()).hasSize(3);
-        GameSession currentGame = res.getCurrentGame();
-        assertThat(currentGame.getCurrentRound()).isNotNull();
+
+        verify(mockRoomRepository, times(1))
+                .findById(eq(room.getRoomId()));
+        verify(mockGamePublisher, times(3))
+                .sendWordToPlayer(any(PrivateRoomUpdatedMessage.class)
+                );
+        verify(mockRoomRepository, times(1))
+                .save(eq(room));
     }
 
     @Test
@@ -54,7 +65,7 @@ class GameServiceTests {
 
         assertThatThrownBy(() -> gameService.startNextRound(room.getRoomId(), "hostConnectionId"))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Game not started yet");
+                .hasMessage("Game not started");
     }
 
     @Test
@@ -64,13 +75,18 @@ class GameServiceTests {
         room.join(Player.player("p2"));
         room.join(Player.player("p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
-        room = gameService.startGame(room.getRoomId(), "hostConnectionId");
-        assertThat(room.getCurrentGame()).isNotNull();
+        when(mockMapper.toMessage(any(), any(), any())).thenCallRealMethod();
+        gameService.startGame(room.getRoomId(), "hostConnectionId");
 
-        Room res = gameService.startNextRound(room.getRoomId(), "hostConnectionId");
+        gameService.startNextRound(room.getRoomId(), "hostConnectionId");
 
-        assertThat(res.getPlayers()).hasSize(3);
-        GameSession currentGame = res.getCurrentGame();
-        assertThat(currentGame.getCurrentRound()).isNotNull();
+        // Then
+        verify(mockRoomRepository, times(2))
+                .findById(eq(room.getRoomId()));
+        verify(mockGamePublisher, times(6))
+                .sendWordToPlayer(any(PrivateRoomUpdatedMessage.class)
+                );
+        verify(mockRoomRepository, times(2))
+                .save(eq(room));
     }
 }

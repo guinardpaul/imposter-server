@@ -79,6 +79,44 @@ class RoomTests {
     }
 
     @Test
+    void started_room_can_create_next_round() {
+        Room room = new Room("room3", "hostId");
+        room.addPlayer(Player.player("user-1", "player1"));
+        room.addPlayer(Player.player("user-2", "player2"));
+        room.addPlayer(Player.player("user-3", "player3"));
+        assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
+
+        room.startGame("hostId", wordPair);
+        assertThat(room.getState()).isInstanceOf(InProgressState.class);
+        assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
+        assertThat(room.getCurrentGame()).isNotNull();
+        Round r1 = room.getCurrentGame().getCurrentRound();
+        assertThat(r1).isNotNull();
+
+        room.startNextRound(wordPair);
+        assertThat(room.getCurrentGame().getCurrentRound()).isNotNull().isNotEqualTo(r1);
+    }
+
+    @Test
+    void not_started_game_cannot_create_next_round() {
+        Room room = new Room("room3", "hostId");
+        room.addPlayer(Player.player("user-1", "player1"));
+        room.addPlayer(Player.player("user-2", "player2"));
+        room.addPlayer(Player.player("user-3", "player3"));
+        assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
+
+        assertThatThrownBy(() -> room.startNextRound(wordPair))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Game not started");
+        assertThatThrownBy(room::getStates)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Game not started");
+        assertThatThrownBy(room::getCurrentGame)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Game not started");
+    }
+
+    @Test
     void room_in_progress_state_should_not_start_or_join_players() {
         Room room = new Room("room3", "hostId");
         room.addPlayer(Player.player("user-1", "player1"));
