@@ -38,6 +38,10 @@ public class Round {
         return  states.get(id).impostor();
     }
 
+    public Map<PlayerId, PlayerRoundState> getStates() {
+        return states;
+    }
+
     private static Player pickRandom(List<Player> players) {
         return players.get(ThreadLocalRandom.current().nextInt(players.size()));
     }

@@ -24,6 +24,17 @@ public class Room {
         state = state.start(this, players.values().stream().toList(), hostId, wordPair);
     }
 
+    void start(List<Player> players, String hostId, WordPair wordPair) {
+        if (players.size() < 2) {
+            throw new IllegalStateException("Game cannot start with less than 2 players");
+        }
+        if (!isHost(hostId)) {
+            throw new IllegalStateException("Game can be started only by host");
+        }
+
+        currentGame = new GameSession(players, wordPair);
+    }
+
     public void join(Player player) {
         state = state.join(this, player);
     }
@@ -59,11 +70,21 @@ public class Room {
         return currentGame;
     }
 
-    void setCurrentGame(GameSession gameSession) {
-        this.currentGame = gameSession;
-    }
-
     boolean isHost(String connectionId) {
         return this.hostConnectionId.equals(connectionId);
+    }
+
+    public void startNextRound(WordPair wordPair) {
+        if (this.currentGame == null) {
+            throw new IllegalStateException("Game not started");
+        }
+        this.currentGame.startNextRound(wordPair);
+    }
+
+    public Map<PlayerId, PlayerRoundState> getStates() {
+        if (this.currentGame == null) {
+            throw new IllegalStateException("Game not started");
+        }
+        return this.currentGame.getCurrentRound().getStates();
     }
 }
