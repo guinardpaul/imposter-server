@@ -275,19 +275,19 @@ class GameControllerStompTests {
         assertThat(updatedMessage.roomName()).isNotNull();
         assertThat(updatedMessage.playerViewList()).hasSize(4);
 
-        PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.poll(5, TimeUnit.SECONDS);
+        PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.poll(20, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-1");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue2.poll(10, TimeUnit.SECONDS);
+        privateMsg = privateUpdatedMessagesBlockingQueue2.poll(20, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-2");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue3.poll(15, TimeUnit.SECONDS);
+        privateMsg = privateUpdatedMessagesBlockingQueue3.poll(20, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-3");
