@@ -1,5 +1,7 @@
 package com.guinardpouard.imposteur.domain.model;
 
+import java.util.List;
+
 public class InProgressState implements GameState {
 
     static final InProgressState INSTANCE = new InProgressState();
@@ -12,7 +14,7 @@ public class InProgressState implements GameState {
     }
 
     @Override
-    public GameState start(Room room) {
+    public GameState start(Room room, List<Player> players, String hostId, WordPair wordPair) {
         throw new IllegalStateException("Game has already started");
     }
 

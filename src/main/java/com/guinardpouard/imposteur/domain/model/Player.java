@@ -2,33 +2,23 @@ package com.guinardpouard.imposteur.domain.model;
 
 public class Player {
 
-    private final String userId;
-    private final String playerName;
-    private final RoomRole role;
+    private final PlayerId id;
+    private final String name;
 
-    private Player(String userId, String playerName, RoomRole role) {
-        this.userId = userId;
-        this.playerName = playerName;
-        this.role = role;
+    private Player(String playerId, String name) {
+        this.id = PlayerId.of(playerId);
+        this.name = name;
     }
 
-    public static Player player(String userId, String playerName) {
-        return new Player(userId, playerName, RoomRole.PLAYER);
+    public static Player player(String playerId, String playerName) {
+        return new Player(playerId, playerName);
     }
 
-    public static Player host(String userId, String playerName) {
-        return new Player(userId, playerName, RoomRole.HOST);
+    public PlayerId id() {
+        return id;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public RoomRole getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 }

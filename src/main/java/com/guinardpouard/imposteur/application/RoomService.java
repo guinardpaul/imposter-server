@@ -2,7 +2,11 @@ package com.guinardpouard.imposteur.application;
 
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
+import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.application.mapper.RoomUpdatedMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,27 +15,33 @@ import java.util.List;
 @Service
 public class RoomService {
 
+    private final static Logger log = LoggerFactory.getLogger(RoomService.class);
     private final RoomRepository roomRepository;
+    private final GamePublisher gamePublisher;
+    private final RoomUpdatedMapper roomUpdatedMapper;
 
     @Autowired
-    public RoomService(RoomRepository roomRepository) {
+    public RoomService(RoomRepository roomRepository, GamePublisher gamePublisher,
+                       RoomUpdatedMapper roomUpdatedMapper) {
         this.roomRepository = roomRepository;
+        this.gamePublisher = gamePublisher;
+        this.roomUpdatedMapper = roomUpdatedMapper;
     }
 
-    public Room createRoom(String userId, String roomName, String hostName) {
-        Room room = new Room(roomName);
-        room.join(Player.host(userId, hostName));
+    public void createRoom(String roomName, String hostId) {
+        Room room = new Room(roomName, hostId);
+        gamePublisher.publishRoomCreated(roomUpdatedMapper.toMessage(room));
         roomRepository.save(room);
-        return room;
+        log.info("Room {} with id {} created", room.getRoomName(), room.getRoomId());
     }
 
-    public Room addPlayerToRoom(String userId, String roomId, String playerName) {
+    public void addPlayerToRoom(String userId, String roomId, String playerName) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
         room.join(Player.player(userId, playerName));
+        gamePublisher.publishRoomJoined(roomUpdatedMapper.toMessage(room));
         roomRepository.save(room);
-
-        return room;
+        log.info("Player {} with connectionId {} joined room {}", playerName, userId, room.getRoomId());
     }
 
     public List<Room> getAllRooms() {
