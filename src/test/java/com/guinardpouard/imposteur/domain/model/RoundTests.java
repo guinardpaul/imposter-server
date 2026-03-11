@@ -69,10 +69,10 @@ class RoundTests {
 
 
     private List<Player> createPlayerList() {
-        Player p1 = Player.player("user1");
-        Player p2 = Player.player("user2");
-        Player p3 = Player.player("user3");
-        Player p4 = Player.player("user4");
+        Player p1 = Player.player("id1", "user1");
+        Player p2 = Player.player("id2", "user2");
+        Player p3 = Player.player("id3", "user3");
+        Player p4 = Player.player("id4", "user4");
 
         return Arrays.asList(p1, p2, p3, p4);
     }

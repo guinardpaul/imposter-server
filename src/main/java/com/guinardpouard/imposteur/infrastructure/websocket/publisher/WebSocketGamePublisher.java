@@ -32,8 +32,11 @@ public class WebSocketGamePublisher implements GamePublisher {
     }
 
     @Override
-    public void publishGameStarted(PrivateRoomUpdatedMessage msg) {
-
+    public void publishGameStarted(RoomUpdatedMessage msg) {
+        template.convertAndSend(
+                "/topic/room/" + msg.roomId(),
+                msg
+        );
     }
 
     @Override

@@ -1,46 +1,17 @@
 package com.guinardpouard.imposteur.domain.model;
 
-import java.util.UUID;
-
 public class Player {
 
     private final PlayerId id;
     private final String name;
 
-    private String connectionId;
-
-    private Player(String connectionId, String name) {
-        this.id = PlayerId.newId();
+    private Player(String playerId, String name) {
+        this.id = PlayerId.of(playerId);
         this.name = name;
-
-        connect(connectionId);
     }
 
-    private Player(String connectionId) {
-        this.id = PlayerId.newId();
-        this.name = UUID.randomUUID().toString();
-
-        connect(connectionId);
-    }
-
-    public static Player player(String connectionId, String playerName) {
-        return new Player(connectionId, playerName);
-    }
-
-    public static Player player(String connectionId) {
-        return new Player(connectionId);
-    }
-
-    public void connect(String connectionId) {
-        this.connectionId = connectionId;
-    }
-
-    public void disconnect() {
-        this.connectionId = null;
-    }
-
-    public boolean isConnected() {
-        return connectionId != null;
+    public static Player player(String playerId, String playerName) {
+        return new Player(playerId, playerName);
     }
 
     public PlayerId id() {
@@ -49,9 +20,5 @@ public class Player {
 
     public String getName() {
         return name;
-    }
-
-    public String getConnectionId() {
-        return connectionId;
     }
 }

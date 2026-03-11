@@ -1,6 +1,8 @@
 package com.guinardpouard.imposteur.configuration;
 
+import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.WebSocketChannelInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -10,10 +12,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final CustomHandshakeHandler handshakeHandler;
+    private final WebSocketChannelInterceptor interceptor;
 
-    public WebSocketConfig(CustomHandshakeHandler handshakeHandler) {
-        this.handshakeHandler = handshakeHandler;
+    public WebSocketConfig(WebSocketChannelInterceptor interceptor) {
+        this.interceptor = interceptor;
     }
 
     @Override
@@ -27,7 +29,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
                 .addEndpoint("/websocket")
-                .setHandshakeHandler(handshakeHandler)
                 .setAllowedOrigins("*");
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(interceptor);
     }
 }

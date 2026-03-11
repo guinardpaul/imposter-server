@@ -74,6 +74,22 @@ public class WebSocketGamePublisherTests {
     }
 
     @Test
+    void should_send_word_to_players_and_update_on_start_game() {
+        PlayerView p1 = new PlayerView("pID1", "name1");
+        PlayerView p2 = new PlayerView("pID2", "name2");
+        PlayerView p3 = new PlayerView("pID3", "name3");
+        List<PlayerView> list = List.of(p1, p2, p3);
+        RoomUpdatedMessage msg = new RoomUpdatedMessage("roomId", "roomName", list);
+        publisher.publishGameStarted(msg);
+
+        verify(template, times(1))
+                .convertAndSend(
+                        eq("/topic/room/roomId"),
+                        eq(msg)
+                );
+    }
+
+    @Test
     void sendWordToPlayer_should_send_word_to_each_player() {
         PrivateRoomUpdatedMessage msg =  new PrivateRoomUpdatedMessage(
                 "room id",
