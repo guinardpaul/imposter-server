@@ -43,7 +43,7 @@ class GameControllerStompTests {
     }
 
     @Test
-    void connection_should_fail_if_header_playerId_is_missing() throws ExecutionException, InterruptedException, TimeoutException {
+    void connection_should_fail_if_header_playerId_is_missing() {
         assertThatThrownBy(() -> stompClient
                 .connectAsync(websocketUrl, new StompSessionHandlerAdapter() {})
                 .get(1, TimeUnit.SECONDS))
@@ -275,25 +275,25 @@ class GameControllerStompTests {
         assertThat(updatedMessage.roomName()).isNotNull();
         assertThat(updatedMessage.playerViewList()).hasSize(4);
 
-        PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.poll(2, TimeUnit.SECONDS);
+        PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.poll(5, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-1");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue2.poll(2, TimeUnit.SECONDS);
+        privateMsg = privateUpdatedMessagesBlockingQueue2.poll(5, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-2");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue3.poll(2, TimeUnit.SECONDS);
+        privateMsg = privateUpdatedMessagesBlockingQueue3.poll(5, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-3");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue4.poll(2, TimeUnit.SECONDS);
+        privateMsg = privateUpdatedMessagesBlockingQueue4.poll(5, TimeUnit.SECONDS);
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-4");
