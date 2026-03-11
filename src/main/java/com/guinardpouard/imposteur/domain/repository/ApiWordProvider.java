@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ApiWordProvider {
 
-    public List<String> getWords(int count);
+    List<String> getWords(int count);
 }

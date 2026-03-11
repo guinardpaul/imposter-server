@@ -1,5 +1,6 @@
 package com.guinardpouard.imposteur.application;
 
+import com.guinardpouard.imposteur.application.mapper.RoomUpdatedMapper;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
@@ -27,21 +28,23 @@ class GameServiceTests {
     @Mock
     private GamePublisher mockGamePublisher;
     @Mock
-    private PrivateRoomUpdateMapper mockMapper;
+    private PrivateRoomUpdateMapper mockPrivateRoomUpdateMapper;
+    @Mock
+    private RoomUpdatedMapper mockRoomUpdatedMapper;
 
     @BeforeEach
     void setup() {
-        gameService = new GameService(mockRoomRepository, mockGamePublisher, mockMapper);
+        gameService = new GameService(mockRoomRepository, mockGamePublisher, mockPrivateRoomUpdateMapper, mockRoomUpdatedMapper);
     }
 
     @Test
     void starting_the_game_should_start_a_gameSession_and_a_round() {
         Room room = new Room("room 1", "hostConnectionId");
-        room.join(Player.player("p1"));
-        room.join(Player.player("p2"));
-        room.join(Player.player("p3"));
+        room.join(Player.player("id1","p1"));
+        room.join(Player.player("id2","p2"));
+        room.join(Player.player("id3","p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
-        when(mockMapper.toMessage(any(), any(), any())).thenCallRealMethod();
+        when(mockPrivateRoomUpdateMapper.toMessage(any(), any(), any())).thenCallRealMethod();
 
         gameService.startGame(room.getRoomId(), "hostConnectionId");
 
@@ -58,9 +61,9 @@ class GameServiceTests {
     @Test
     void should_throw_exception_if_game_not_started_and_trying_to_create_next_round() {
         Room room = new Room("room 1", "hostConnectionId");
-        room.join(Player.player("p1"));
-        room.join(Player.player("p2"));
-        room.join(Player.player("p3"));
+        room.join(Player.player("id1","p1"));
+        room.join(Player.player("id2","p2"));
+        room.join(Player.player("id3","p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
 
         assertThatThrownBy(() -> gameService.startNextRound(room.getRoomId(), "hostConnectionId"))
@@ -71,11 +74,11 @@ class GameServiceTests {
     @Test
     void should_start_a_new_round_on_a_started_game() {
         Room room = new Room("room 1", "hostConnectionId");
-        room.join(Player.player("p1"));
-        room.join(Player.player("p2"));
-        room.join(Player.player("p3"));
+        room.join(Player.player("id1","p1"));
+        room.join(Player.player("id2","p2"));
+        room.join(Player.player("id3","p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
-        when(mockMapper.toMessage(any(), any(), any())).thenCallRealMethod();
+        when(mockPrivateRoomUpdateMapper.toMessage(any(), any(), any())).thenCallRealMethod();
         gameService.startGame(room.getRoomId(), "hostConnectionId");
 
         gameService.startNextRound(room.getRoomId(), "hostConnectionId");

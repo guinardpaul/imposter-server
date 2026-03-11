@@ -1,8 +1,10 @@
 package com.guinardpouard.imposteur.infrastructure.websocket.entrypoint;
 
+import com.guinardpouard.imposteur.application.GameService;
 import com.guinardpouard.imposteur.application.RoomService;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.CreateRoomMessage;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.JoinRoomMessage;
+import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.StartGameMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +21,8 @@ class GameControllerTests {
 
     @Mock
     private RoomService roomService;
+    @Mock
+    private GameService gameService;
     @InjectMocks
     private GameController controller;
 
@@ -47,6 +51,19 @@ class GameControllerTests {
                 eq("user-2"),
                 eq("room-id"),
                 eq("player 1")
+        );
+    }
+
+    @Test
+    void should_start_game() {
+        Principal principal = () -> "12345";
+        StartGameMessage msg = new StartGameMessage("roomId", "12345");
+
+        controller.startGame(msg, principal);
+
+        verify(gameService).startGame(
+                eq("roomId"),
+                eq("12345")
         );
     }
 
