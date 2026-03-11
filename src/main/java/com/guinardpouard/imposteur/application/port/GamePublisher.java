@@ -7,6 +7,6 @@ public interface GamePublisher {
 
     void publishRoomCreated(RoomUpdatedMessage msg);
     void publishRoomJoined(RoomUpdatedMessage msg);
-    void publishGameStarted(PrivateRoomUpdatedMessage msg);
+    void publishGameStarted(RoomUpdatedMessage msg);
     void sendWordToPlayer(PrivateRoomUpdatedMessage msg);
 }

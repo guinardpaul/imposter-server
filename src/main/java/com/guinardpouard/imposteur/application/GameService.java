@@ -1,5 +1,6 @@
 package com.guinardpouard.imposteur.application;
 
+import com.guinardpouard.imposteur.application.mapper.RoomUpdatedMapper;
 import com.guinardpouard.imposteur.domain.model.*;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
@@ -17,12 +18,14 @@ public class GameService {
     private final RoomRepository roomRepository;
     private final GamePublisher gamePublisher;
     private final PrivateRoomUpdateMapper privateRoomUpdateMapper;
+    private final RoomUpdatedMapper roomUpdatedMapper;
 
     public GameService(RoomRepository roomRepository, GamePublisher gamePublisher,
-                       PrivateRoomUpdateMapper privateRoomUpdateMapper) {
+                       PrivateRoomUpdateMapper privateRoomUpdateMapper, RoomUpdatedMapper roomUpdatedMapper) {
         this.roomRepository = roomRepository;
         this.gamePublisher = gamePublisher;
         this.privateRoomUpdateMapper = privateRoomUpdateMapper;
+        this.roomUpdatedMapper = roomUpdatedMapper;
     }
 
     public void startGame(String roomId, String hostId) {
@@ -31,6 +34,10 @@ public class GameService {
 
         WordPair wordPair = new WordPair("Pomme", "Avion");
         room.startGame(hostId, wordPair);
+
+        gamePublisher.publishGameStarted(
+                roomUpdatedMapper.toMessage(room)
+        );
 
         for (Map.Entry<PlayerId, PlayerRoundState> state : room.getStates().entrySet()) {
             gamePublisher.sendWordToPlayer(
