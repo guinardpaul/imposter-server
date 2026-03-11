@@ -146,7 +146,7 @@ class GameControllerStompTests {
     }
 
     @Test
-    void when_host_start_game_should_send_update_on_game_status_and_word_by_players() throws ExecutionException, InterruptedException, TimeoutException {
+    void when_host_start_game_should_send_update_on_game_status_and_word_to_all_players() throws ExecutionException, InterruptedException, TimeoutException {
         // Stomp session
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("player-id", "host-connection-id");
