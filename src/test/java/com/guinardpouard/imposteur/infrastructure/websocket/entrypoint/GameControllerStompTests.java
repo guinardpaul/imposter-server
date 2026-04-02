@@ -276,6 +276,8 @@ class GameControllerStompTests {
             }
         });
 
+        Thread.sleep(300);
+
         session.send("/app/room.start", new StartGameMessage(roomId, "host-connection-id"));
 
         // Then
