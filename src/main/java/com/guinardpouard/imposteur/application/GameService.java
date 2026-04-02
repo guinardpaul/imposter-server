@@ -31,6 +31,7 @@ public class GameService {
     public void startGame(String roomId, String hostId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
+        log.info("Starting game for room {}", room.getRoomId());
 
         WordPair wordPair = new WordPair("Pomme", "Avion");
         room.startGame(hostId, wordPair);
@@ -48,7 +49,7 @@ public class GameService {
                     )
             );
         }
-        log.info("Starting game for room {}", room.getRoomId());
+        log.info("Game started for room {}", room.getRoomId());
         roomRepository.save(room);
     }
 

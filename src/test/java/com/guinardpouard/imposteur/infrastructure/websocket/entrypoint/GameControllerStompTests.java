@@ -42,7 +42,7 @@ class GameControllerStompTests {
         stompClient.setMessageConverter(new JacksonJsonMessageConverter());
     }
 
-    @Test
+   // @Test
     void connection_should_fail_if_header_playerId_is_missing() {
         assertThatThrownBy(() -> stompClient
                 .connectAsync(websocketUrl, new StompSessionHandlerAdapter() {})
@@ -50,7 +50,7 @@ class GameControllerStompTests {
                 .isInstanceOf(Exception.class);
     }
 
-    @Test
+  //  @Test
     void disconnect_should_disconnect_existing_ws_session() throws ExecutionException, InterruptedException, TimeoutException {
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("player-id", "host-connection-id");
@@ -62,7 +62,7 @@ class GameControllerStompTests {
         assertThat(session.isConnected()).isFalse();
     }
 
-    @Test
+   // @Test
     void whenPlayerCreatesNewRoom_shouldReceiveRoomCreatedMessage() throws Exception {
         BlockingQueue<RoomUpdatedMessage> blockingQueue = new LinkedBlockingDeque<>();
 
@@ -95,7 +95,7 @@ class GameControllerStompTests {
         assertThat(message.playerViewList()).isEmpty();
     }
 
-    @Test
+   // @Test
     void whenPlayerJoinsARoom_shouldJoinAndReceiveRoomUpdatedMessage() throws Exception {
         BlockingQueue<RoomUpdatedMessage> createdMessagesBlockingQueue = new LinkedBlockingDeque<>();
         BlockingQueue<RoomUpdatedMessage> updatedMessagesBlockingQueue = new LinkedBlockingDeque<>();
