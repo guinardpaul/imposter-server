@@ -6,6 +6,7 @@ import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.JoinR
 import com.guinardpouard.imposteur.application.event.RoomUpdatedMessage;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.StartGameMessage;
 import jakarta.annotation.Nonnull;
+import org.awaitility.Awaitility;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,34 +43,37 @@ class GameControllerStompTests {
         stompClient.setMessageConverter(new JacksonJsonMessageConverter());
     }
 
-   // @Test
+    @Test
     void connection_should_fail_if_header_playerId_is_missing() {
         assertThatThrownBy(() -> stompClient
-                .connectAsync(websocketUrl, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS))
                 .isInstanceOf(Exception.class);
     }
 
-  //  @Test
+    @Test
     void disconnect_should_disconnect_existing_ws_session() throws ExecutionException, InterruptedException, TimeoutException {
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("player-id", "host-connection-id");
         StompSession session = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
 
         session.disconnect();
         assertThat(session.isConnected()).isFalse();
     }
 
-   // @Test
+    @Test
     void whenPlayerCreatesNewRoom_shouldReceiveRoomCreatedMessage() throws Exception {
         BlockingQueue<RoomUpdatedMessage> blockingQueue = new LinkedBlockingDeque<>();
 
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("player-id", "host-connection-id");
         StompSession session = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
 
         session.subscribe("/topic/room", new StompFrameHandler() {
@@ -95,7 +99,7 @@ class GameControllerStompTests {
         assertThat(message.playerViewList()).isEmpty();
     }
 
-   // @Test
+    @Test
     void whenPlayerJoinsARoom_shouldJoinAndReceiveRoomUpdatedMessage() throws Exception {
         BlockingQueue<RoomUpdatedMessage> createdMessagesBlockingQueue = new LinkedBlockingDeque<>();
         BlockingQueue<RoomUpdatedMessage> updatedMessagesBlockingQueue = new LinkedBlockingDeque<>();
@@ -103,7 +107,8 @@ class GameControllerStompTests {
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("player-id", "host-connection-id");
         StompSession session = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
 
         // Create room
@@ -151,7 +156,8 @@ class GameControllerStompTests {
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("player-id", "host-connection-id");
         StompSession session = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
 
         // Subscribe on update room/game
@@ -180,7 +186,8 @@ class GameControllerStompTests {
         StompHeaders connectHeaders1 = new StompHeaders();
         connectHeaders1.add("player-id", "player-id-1");
         StompSession session1 = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders1, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders1, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
         session1.send("/app/room.join", new JoinRoomMessage(roomId, "Player 1"));
         RoomUpdatedMessage joinedGameMessage = updatedMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
@@ -189,7 +196,8 @@ class GameControllerStompTests {
         StompHeaders connectHeaders2 = new StompHeaders();
         connectHeaders2.add("player-id", "player-id-2");
         StompSession session2 = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders2, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders2, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
         session2.send("/app/room.join", new JoinRoomMessage(roomId, "Player2"));
         joinedGameMessage = updatedMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
@@ -198,7 +206,8 @@ class GameControllerStompTests {
         StompHeaders connectHeaders3 = new StompHeaders();
         connectHeaders3.add("player-id", "player-id-3");
         StompSession session3 = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders3, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders3, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
         session3.send("/app/room.join", new JoinRoomMessage(roomId, "Player 3"));
         joinedGameMessage = updatedMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
@@ -207,7 +216,8 @@ class GameControllerStompTests {
         StompHeaders connectHeaders4 = new StompHeaders();
         connectHeaders4.add("player-id", "player-id-4");
         StompSession session4 = stompClient
-                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders4, new StompSessionHandlerAdapter() {})
+                .connectAsync(websocketUrl, new WebSocketHttpHeaders(), connectHeaders4, new StompSessionHandlerAdapter() {
+                })
                 .get(1, TimeUnit.SECONDS);
         session4.send("/app/room.join", new JoinRoomMessage(roomId, "Player 4"));
         joinedGameMessage = updatedMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
@@ -275,25 +285,33 @@ class GameControllerStompTests {
         assertThat(updatedMessage.roomName()).isNotNull();
         assertThat(updatedMessage.playerViewList()).hasSize(4);
 
-        PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.poll(2, TimeUnit.SECONDS);
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue1.isEmpty());
+        PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.take();
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-1");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue2.poll(2, TimeUnit.SECONDS);
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue2.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue2.take();
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-2");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue3.poll(20, TimeUnit.SECONDS);
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue3.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue3.take();
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-3");
         assertThat(privateMsg.word()).isNotNull();
 
-        privateMsg = privateUpdatedMessagesBlockingQueue4.poll(20, TimeUnit.SECONDS);
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue4.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue4.take();
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-4");
