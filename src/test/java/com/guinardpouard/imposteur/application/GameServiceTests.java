@@ -92,4 +92,12 @@ class GameServiceTests {
         verify(mockRoomRepository, times(2))
                 .save(eq(room));
     }
+
+    @Test
+    void should_throw_when_startGame_on_unknown_room() {
+        when(mockRoomRepository.findById("unknown_id")).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> gameService.startGame("unknown_id", "host_connection_id"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Room does not exist");
+    }
 }

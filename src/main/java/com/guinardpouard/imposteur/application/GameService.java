@@ -5,6 +5,7 @@ import com.guinardpouard.imposteur.domain.model.*;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.domain.repository.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,10 @@ public class GameService {
     }
 
     public void startGame(String roomId, String hostId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
+        Room room = getRoomByRoomId(roomId);
         log.info("Starting game for room {}", room.getRoomId());
 
-        WordPair wordPair = new WordPair("Pomme", "Avion");
+        WordPair wordPair = getWordPair();
         room.startGame(hostId, wordPair);
 
         gamePublisher.publishGameStarted(
@@ -54,10 +54,9 @@ public class GameService {
     }
 
     public void startNextRound(String roomId, String hostId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
+        Room room = getRoomByRoomId(roomId);
 
-        WordPair wordPair = new WordPair("Pomme", "Avion");
+        WordPair wordPair = getWordPair();
         room.startNextRound(wordPair);
 
         for (Map.Entry<PlayerId, PlayerRoundState> state: room.getStates().entrySet()) {
@@ -71,6 +70,15 @@ public class GameService {
         }
         log.info("Starting next round for room {}", room.getRoomId());
         roomRepository.save(room);
+    }
+
+    private @NonNull Room getRoomByRoomId(String roomId) {
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
+    }
+
+    private @NonNull WordPair getWordPair() {
+        return new WordPair("Pomme", "Avion");
     }
 
 }
