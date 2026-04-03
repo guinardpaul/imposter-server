@@ -1,5 +1,7 @@
 package com.guinardpouard.imposteur.domain.model;
 
+import java.util.List;
+
 public class FinishedState implements GameState {
 
     static final FinishedState INSTANCE = new FinishedState();
@@ -12,10 +14,8 @@ public class FinishedState implements GameState {
     }
 
     @Override
-    public GameState start(Room room) {
-        if (room.getPlayers().size() < 2) {
-            throw new IllegalStateException("Game cannot start with less than 2 players");
-        }
+    public GameState start(Room room, List<Player> players, String hostId, WordPair wordPair) {
+        room.start(players, hostId, wordPair);
         return InProgressState.INSTANCE;
     }
 

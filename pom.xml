@@ -12,7 +12,7 @@
     <artifactId>imposteur</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>imposteur</name>
-    <description>Backend for game L&apos;imposteur</description>
+    <description>Backend for game imposteur</description>
     <url/>
     <licenses>
         <license/>
@@ -114,6 +114,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>${project.basedir}/**/ImposteurApplication.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

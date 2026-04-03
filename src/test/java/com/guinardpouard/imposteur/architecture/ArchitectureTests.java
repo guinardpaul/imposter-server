@@ -32,6 +32,7 @@ class ArchitectureTest {
                         "java..",
                         "javax..",
                         "org.springframework..",
+                        "org.slf4j..",
                         "com.guinardpouard.imposteur.domain..",
                         "com.guinardpouard.imposteur.infrastructure..",
                         "com.guinardpouard.imposteur.application.."
@@ -43,26 +44,25 @@ class ArchitectureTest {
     void websocket_should_not_depend_on_infrastructure_or_domain_directly() {
         ArchRuleDefinition.noClasses()
                 .that().resideInAPackage("..websocket..")
-                .and().resideOutsideOfPackage("..websocket.mapper..")
                 .should().dependOnClassesThat().resideInAnyPackage(
-                        "com.guinardpouard.imposteur.domain..",
-                        "com.guinardpouard.imposteur.infrastructure.."
+                        "com.guinardpouard.imposteur.domain.."
                 )
                 .check(classes);
     }
 
     @Test
-    void mapper_should_only_depend_on_domain() {
+    void application_mapper_should_only_depend_on_domain() {
         ArchRuleDefinition.classes()
-                .that().resideInAPackage("..websocket.mapper..")
+                .that().resideInAPackage("..application.mapper..")
                 .should().onlyDependOnClassesThat().resideInAnyPackage(
                         "java..",
                         "javax..",
                         "org.springframework..",
                         "com.guinardpouard.imposteur.domain..",
-                        "com.guinardpouard.imposteur.websocket.dto..",
-                        "com.guinardpouard.imposteur.websocket.mapper.."
+                        "com.guinardpouard.imposteur.application.event..",
+                        "com.guinardpouard.imposteur.application.mapper.."
                 )
                 .check(classes);
     }
+
 }
