@@ -4,7 +4,7 @@ import com.guinardpouard.imposteur.application.event.PrivateRoomUpdatedMessage;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.CreateRoomMessage;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.JoinRoomMessage;
 import com.guinardpouard.imposteur.application.event.RoomUpdatedMessage;
-import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.StartGameMessage;
+import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.UpdateGameMessage;
 import jakarta.annotation.Nonnull;
 import org.awaitility.Awaitility;
 import org.jspecify.annotations.NonNull;
@@ -278,7 +278,7 @@ class GameControllerStompTests {
 
         Thread.sleep(300);
 
-        session.send("/app/room.start", new StartGameMessage(roomId, "host-connection-id"));
+        session.send("/app/room.start", new UpdateGameMessage(roomId, "host-connection-id"));
 
         // Then
         RoomUpdatedMessage updatedMessage = updatedMessagesBlockingQueue.poll(2, TimeUnit.SECONDS);
@@ -290,6 +290,42 @@ class GameControllerStompTests {
         Awaitility.await().atMost(5, TimeUnit.SECONDS)
                 .until(() -> !privateUpdatedMessagesBlockingQueue1.isEmpty());
         PrivateRoomUpdatedMessage privateMsg = privateUpdatedMessagesBlockingQueue1.take();
+        assertThat(privateMsg).isNotNull();
+        assertThat(privateMsg.roomId()).isEqualTo(roomId);
+        assertThat(privateMsg.playerId()).isEqualTo("player-id-1");
+        assertThat(privateMsg.word()).isNotNull();
+
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue2.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue2.take();
+        assertThat(privateMsg).isNotNull();
+        assertThat(privateMsg.roomId()).isEqualTo(roomId);
+        assertThat(privateMsg.playerId()).isEqualTo("player-id-2");
+        assertThat(privateMsg.word()).isNotNull();
+
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue3.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue3.take();
+        assertThat(privateMsg).isNotNull();
+        assertThat(privateMsg.roomId()).isEqualTo(roomId);
+        assertThat(privateMsg.playerId()).isEqualTo("player-id-3");
+        assertThat(privateMsg.word()).isNotNull();
+
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue4.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue4.take();
+        assertThat(privateMsg).isNotNull();
+        assertThat(privateMsg.roomId()).isEqualTo(roomId);
+        assertThat(privateMsg.playerId()).isEqualTo("player-id-4");
+        assertThat(privateMsg.word()).isNotNull();
+
+        // Start next round
+        session.send("/app/room.next-round", new UpdateGameMessage(roomId, "host-connection-id"));
+
+        // Then
+        Awaitility.await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !privateUpdatedMessagesBlockingQueue1.isEmpty());
+        privateMsg = privateUpdatedMessagesBlockingQueue1.take();
         assertThat(privateMsg).isNotNull();
         assertThat(privateMsg.roomId()).isEqualTo(roomId);
         assertThat(privateMsg.playerId()).isEqualTo("player-id-1");

@@ -4,7 +4,7 @@ import com.guinardpouard.imposteur.application.GameService;
 import com.guinardpouard.imposteur.application.RoomService;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.CreateRoomMessage;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.JoinRoomMessage;
-import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.StartGameMessage;
+import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.UpdateGameMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,11 +57,24 @@ class GameControllerTests {
     @Test
     void should_start_game() {
         Principal principal = () -> "12345";
-        StartGameMessage msg = new StartGameMessage("roomId", "12345");
+        UpdateGameMessage msg = new UpdateGameMessage("roomId", "12345");
 
         controller.startGame(msg, principal);
 
         verify(gameService).startGame(
+                eq("roomId"),
+                eq("12345")
+        );
+    }
+
+    @Test
+    void should_start_next_round() {
+        Principal principal = () -> "12345";
+        UpdateGameMessage msg = new UpdateGameMessage("roomId", "12345");
+
+        controller.startNextRound(msg, principal);
+
+        verify(gameService).startNextRound(
                 eq("roomId"),
                 eq("12345")
         );

@@ -55,11 +55,12 @@ public class GameService {
 
     public void startNextRound(String roomId, String hostId) {
         Room room = getRoomByRoomId(roomId);
+        log.info("Starting next round for room {}", room.getRoomId());
 
         WordPair wordPair = getWordPair();
         room.startNextRound(hostId, wordPair);
 
-        for (Map.Entry<PlayerId, PlayerRoundState> state: room.getStates().entrySet()) {
+        for (Map.Entry<PlayerId, PlayerRoundState> state : room.getStates().entrySet()) {
             gamePublisher.sendWordToPlayer(
                     privateRoomUpdateMapper.toMessage(
                             room.getRoomId(),
@@ -68,7 +69,7 @@ public class GameService {
                     )
             );
         }
-        log.info("Starting next round for room {}", room.getRoomId());
+        log.info("Next round started for room {}", room.getRoomId());
         roomRepository.save(room);
     }
 

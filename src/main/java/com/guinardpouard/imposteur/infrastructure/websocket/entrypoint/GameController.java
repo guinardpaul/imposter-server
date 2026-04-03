@@ -4,7 +4,7 @@ import com.guinardpouard.imposteur.application.GameService;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.CreateRoomMessage;
 import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.JoinRoomMessage;
 import com.guinardpouard.imposteur.application.RoomService;
-import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.StartGameMessage;
+import com.guinardpouard.imposteur.infrastructure.websocket.entrypoint.dto.UpdateGameMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
@@ -32,9 +32,13 @@ public class GameController {
     }
 
     @MessageMapping("/room.start")
-    public void startGame(StartGameMessage msg, Principal principal) {
+    public void startGame(UpdateGameMessage msg, Principal principal) {
         gameService.startGame(msg.roomId(), principal.getName());
     }
 
+    @MessageMapping("/room.next-round")
+    public void startNextRound(UpdateGameMessage msg, Principal principal) {
+        gameService.startNextRound(msg.roomId(), principal.getName());
+    }
 
 }

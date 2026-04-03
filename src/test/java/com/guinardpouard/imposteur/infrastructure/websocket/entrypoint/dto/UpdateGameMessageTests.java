@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StartGameMessageTests {
+public class UpdateGameMessageTests {
 
     @Test
     void should_contains_dto() {
-        StartGameMessage msg = new StartGameMessage(
+        UpdateGameMessage msg = new UpdateGameMessage(
                 "room id",
                 "hostConnectionId"
         );
