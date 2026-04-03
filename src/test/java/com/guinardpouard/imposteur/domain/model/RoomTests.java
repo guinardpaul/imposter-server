@@ -93,8 +93,28 @@ class RoomTests {
         Round r1 = room.getCurrentGame().getCurrentRound();
         assertThat(r1).isNotNull();
 
-        room.startNextRound(wordPair);
+        room.startNextRound("hostId", wordPair);
         assertThat(room.getCurrentGame().getCurrentRound()).isNotNull().isNotEqualTo(r1);
+    }
+
+    @Test
+    void only_host_can_start_next_round() {
+        Room room = new Room("room3", "hostId");
+        room.addPlayer(Player.player("user-1", "player1"));
+        room.addPlayer(Player.player("user-2", "player2"));
+        room.addPlayer(Player.player("user-3", "player3"));
+        assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
+
+        room.startGame("hostId", wordPair);
+        assertThat(room.getState()).isInstanceOf(InProgressState.class);
+        assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
+        assertThat(room.getCurrentGame()).isNotNull();
+        Round r1 = room.getCurrentGame().getCurrentRound();
+        assertThat(r1).isNotNull();
+
+        assertThatThrownBy(() -> room.startNextRound("not_host_id", wordPair))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Game can be started only by host");
     }
 
     @Test
@@ -105,7 +125,7 @@ class RoomTests {
         room.addPlayer(Player.player("user-3", "player3"));
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
 
-        assertThatThrownBy(() -> room.startNextRound(wordPair))
+        assertThatThrownBy(() -> room.startNextRound("hostId", wordPair))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Game not started");
         assertThatThrownBy(room::getStates)

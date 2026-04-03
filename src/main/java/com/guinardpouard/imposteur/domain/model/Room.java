@@ -28,7 +28,7 @@ public class Room {
         if (players.size() < 2) {
             throw new IllegalStateException("Game cannot start with less than 2 players");
         }
-        if (!isHost(hostId)) {
+        if (isNotHost(hostId)) {
             throw new IllegalStateException("Game can be started only by host");
         }
 
@@ -70,13 +70,16 @@ public class Room {
         return currentGame;
     }
 
-    boolean isHost(String connectionId) {
-        return this.hostConnectionId.equals(connectionId);
+    boolean isNotHost(String connectionId) {
+        return !this.hostConnectionId.equals(connectionId);
     }
 
-    public void startNextRound(WordPair wordPair) {
+    public void startNextRound(String hostId, WordPair wordPair) {
         if (this.currentGame == null) {
             throw new IllegalStateException("Game not started");
+        }
+        if (isNotHost(hostId)) {
+            throw new IllegalStateException("Game can be started only by host");
         }
         this.currentGame.startNextRound(wordPair);
     }
