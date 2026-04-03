@@ -1,7 +1,7 @@
 package com.guinardpouard.imposteur.infrastructure.persistence;
 
 import com.guinardpouard.imposteur.domain.model.WordPair;
-import com.guinardpouard.imposteur.domain.repository.ApiWordProvider;
+import com.guinardpouard.imposteur.domain.port.ApiWordProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

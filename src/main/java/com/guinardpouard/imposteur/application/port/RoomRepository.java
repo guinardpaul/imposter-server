@@ -1,4 +1,4 @@
-package com.guinardpouard.imposteur.domain.repository;
+package com.guinardpouard.imposteur.application.port;
 
 import com.guinardpouard.imposteur.domain.model.Room;
 

@@ -1,4 +1,4 @@
-package com.guinardpouard.imposteur.domain.repository;
+package com.guinardpouard.imposteur.domain.port;
 
 import com.guinardpouard.imposteur.domain.model.WordPair;
 

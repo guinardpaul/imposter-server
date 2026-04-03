@@ -3,7 +3,7 @@ package com.guinardpouard.imposteur.application;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
-import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.RoomUpdatedMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

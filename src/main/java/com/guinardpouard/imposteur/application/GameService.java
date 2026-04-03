@@ -3,7 +3,7 @@ package com.guinardpouard.imposteur.application;
 import com.guinardpouard.imposteur.application.mapper.RoomUpdatedMapper;
 import com.guinardpouard.imposteur.domain.model.*;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
-import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class GameService {
         Room room = getRoomByRoomId(roomId);
 
         WordPair wordPair = getWordPair();
-        room.startNextRound(wordPair);
+        room.startNextRound(hostId, wordPair);
 
         for (Map.Entry<PlayerId, PlayerRoundState> state: room.getStates().entrySet()) {
             gamePublisher.sendWordToPlayer(

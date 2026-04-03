@@ -1,7 +1,7 @@
 package com.guinardpouard.imposteur.infrastructure.persistence.inmemory;
 
 import com.guinardpouard.imposteur.domain.model.Room;
-import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.application.port.RoomRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

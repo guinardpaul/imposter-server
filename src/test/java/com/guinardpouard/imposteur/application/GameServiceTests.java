@@ -4,7 +4,7 @@ import com.guinardpouard.imposteur.application.mapper.RoomUpdatedMapper;
 import com.guinardpouard.imposteur.domain.model.Player;
 import com.guinardpouard.imposteur.domain.model.Room;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
-import com.guinardpouard.imposteur.domain.repository.RoomRepository;
+import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
 import com.guinardpouard.imposteur.application.event.PrivateRoomUpdatedMessage;
 import org.junit.jupiter.api.BeforeEach;
