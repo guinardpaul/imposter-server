@@ -8,11 +8,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class WordProviderTests {
+class JsonWordProviderTests {
 
     @Test
     void should_return_wordPair() {
-        ApiWordProvider provider = new WordProvider();
+        ApiWordProvider provider = new JsonWordProvider();
         List<WordPair> list = provider.getWords(1);
 
         assertThat(list).hasSize(1);

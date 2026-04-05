@@ -7,6 +7,7 @@ import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
 import com.guinardpouard.imposteur.application.event.PrivateRoomUpdatedMessage;
+import com.guinardpouard.imposteur.domain.port.ApiWordProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +27,8 @@ class GameServiceTests {
     @Mock
     private RoomRepository mockRoomRepository;
     @Mock
+    private ApiWordProvider mockApiWordProvider;
+    @Mock
     private GamePublisher mockGamePublisher;
     @Mock
     private PrivateRoomUpdateMapper mockPrivateRoomUpdateMapper;
@@ -34,7 +37,7 @@ class GameServiceTests {
 
     @BeforeEach
     void setup() {
-        gameService = new GameService(mockRoomRepository, mockGamePublisher, mockPrivateRoomUpdateMapper, mockRoomUpdatedMapper);
+        gameService = new GameService(mockRoomRepository, mockGamePublisher, mockPrivateRoomUpdateMapper, mockRoomUpdatedMapper, mockApiWordProvider);
     }
 
     @Test
