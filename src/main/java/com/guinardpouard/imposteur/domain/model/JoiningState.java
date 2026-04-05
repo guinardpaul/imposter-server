@@ -15,8 +15,8 @@ public final class JoiningState implements GameState {
     }
 
     @Override
-    public GameState start(Room room, List<Player> players, String hostId, WordPair wordPair) {
-        room.start(players, hostId, wordPair);
+    public GameState start(Room room, List<Player> players, String hostId) {
+        room.start(players, hostId);
         return InProgressState.INSTANCE;
     }
 

@@ -20,11 +20,11 @@ public class Room {
         state = JoiningState.INSTANCE;
     }
 
-    public void startGame(String hostId, WordPair wordPair) {
-        state = state.start(this, players.values().stream().toList(), hostId, wordPair);
+    public void startGame(String hostId) {
+        state = state.start(this, players.values().stream().toList(), hostId);
     }
 
-    void start(List<Player> players, String hostId, WordPair wordPair) {
+    void start(List<Player> players, String hostId) {
         if (players.size() < 2) {
             throw new IllegalStateException("Game cannot start with less than 2 players");
         }
@@ -32,7 +32,7 @@ public class Room {
             throw new IllegalStateException("Game can be started only by host");
         }
 
-        currentGame = new GameSession(players, wordPair);
+        currentGame = new GameSession(players);
     }
 
     public void join(Player player) {

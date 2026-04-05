@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GameSessionTests {
 
@@ -21,9 +19,8 @@ class GameSessionTests {
         players.add(p2);
         players.add(p3);
 
-        WordPair wordPair = new WordPair("mot1", "mot2");
-        GameSession gameSession = new GameSession(players, wordPair);
-         assertThat(gameSession.getCurrentRound()).isNotNull();
+        GameSession gameSession = new GameSession(players);
+        assertThat(gameSession.getCurrentRound()).isNotNull();
 
         gameSession.startNextRound(new WordPair("Cheval", "Voiture"));
         assertThat(gameSession.getCurrentRound()).isNotNull();

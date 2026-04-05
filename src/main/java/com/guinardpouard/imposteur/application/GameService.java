@@ -7,12 +7,10 @@ import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
 import com.guinardpouard.imposteur.domain.port.ApiWordProvider;
 import com.guinardpouard.imposteur.domain.service.WordSelector;
-import com.guinardpouard.imposteur.infrastructure.persistence.JsonWordProvider;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.handler.MappedInterceptor;
 
 import java.util.Map;
 
@@ -40,12 +38,14 @@ public class GameService {
         Room room = getRoomByRoomId(roomId);
         log.info("Starting game for room {}", room.getRoomId());
 
-        WordPair wordPair = getWordPair(room);
-        room.startGame(hostId, wordPair);
+        room.startGame(hostId);
 
         gamePublisher.publishGameStarted(
                 roomUpdatedMapper.toMessage(room)
         );
+
+        WordPair wordPair = getWordPair(room);
+        room.startNextRound(hostId, wordPair);
 
         for (Map.Entry<PlayerId, PlayerRoundState> state : room.getStates().entrySet()) {
             gamePublisher.sendWordToPlayer(

@@ -6,12 +6,10 @@ public class GameSession {
 
     private final List<Player> players;
     private final List<Round> rounds = new ArrayList<>();
-    private Set<Integer> usedWordIndexes = new HashSet<>();
+    private final Set<Integer> usedWordIndexes = new HashSet<>();
 
-    public GameSession(List<Player> players, WordPair wordPair) {
+    public GameSession(List<Player> players) {
         this.players = players;
-
-        startNextRound(wordPair);
     }
 
     public void startNextRound(WordPair wordPair) {
