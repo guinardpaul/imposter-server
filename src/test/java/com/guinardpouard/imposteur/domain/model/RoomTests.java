@@ -46,7 +46,7 @@ class RoomTests {
 
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
 
-        assertThatThrownBy(() -> room.startGame("hostId", wordPair)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> room.startGame("hostId")).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Game cannot start with less than");
     }
 
@@ -59,7 +59,7 @@ class RoomTests {
 
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
 
-        assertThatThrownBy(() -> room.startGame("user-1", wordPair)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> room.startGame("user-1")).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Game can be started only by host");
     }
 
@@ -71,7 +71,7 @@ class RoomTests {
         room.addPlayer(Player.player("user-3", "player3"));
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
 
-        room.startGame("hostId", wordPair);
+        room.startGame("hostId");
 
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
@@ -86,15 +86,16 @@ class RoomTests {
         room.addPlayer(Player.player("user-3", "player3"));
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
 
-        room.startGame("hostId", wordPair);
+        room.startGame("hostId");
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
         assertThat(room.getCurrentGame()).isNotNull();
+
+        room.startNextRound("hostId", wordPair);
         Round r1 = room.getCurrentGame().getCurrentRound();
         assertThat(r1).isNotNull();
 
-        room.startNextRound("hostId", wordPair);
-        assertThat(room.getCurrentGame().getCurrentRound()).isNotNull().isNotEqualTo(r1);
+        assertThat(room.getCurrentGame().getCurrentRound()).isNotNull().isEqualTo(r1);
     }
 
     @Test
@@ -105,10 +106,11 @@ class RoomTests {
         room.addPlayer(Player.player("user-3", "player3"));
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
 
-        room.startGame("hostId", wordPair);
+        room.startGame("hostId");
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
         assertThat(room.getCurrentGame()).isNotNull();
+        room.startNextRound("hostId", wordPair);
         Round r1 = room.getCurrentGame().getCurrentRound();
         assertThat(r1).isNotNull();
 
@@ -143,11 +145,11 @@ class RoomTests {
         room.addPlayer(Player.player("user-2", "player2"));
         room.addPlayer(Player.player("user-3", "player3"));
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
-        room.startGame("hostId", wordPair);
+        room.startGame("hostId");
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
 
-        assertThatThrownBy(() -> room.startGame("hostId", wordPair)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> room.startGame("hostId")).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Game has already started");
         assertThatThrownBy(() -> room.join(Player.player("user-3", "player3"))).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Game has already started");
@@ -160,7 +162,7 @@ class RoomTests {
         room.addPlayer(Player.player("user-2", "player2"));
         room.addPlayer(Player.player("user-3", "player3"));
         assertThat(room.getState().state()).isEqualTo(GamePhase.JOINING);
-        room.startGame("hostId", wordPair);
+        room.startGame("hostId");
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
         room.endGame();
@@ -174,7 +176,7 @@ class RoomTests {
         room.join(Player.player("user-4", "player4"));
         assertThat(room.getPlayers()).hasSize(4);
 
-        room.startGame("hostId", wordPair);
+        room.startGame("hostId");
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
     }
 

@@ -1,0 +1,8 @@
+[
+  { "common": "Cat", "impostor": "Tiger" },
+  { "common": "Dog", "impostor": "Wolf" },
+  { "common": "Pizza", "impostor": "Burger" },
+  { "common": "Coffee", "impostor": "Tea" },
+  { "common": "Car", "impostor": "Truck" },
+  { "common": "Train", "impostor": "Metro" }
+]

@@ -14,7 +14,7 @@ public class InProgressState implements GameState {
     }
 
     @Override
-    public GameState start(Room room, List<Player> players, String hostId, WordPair wordPair) {
+    public GameState start(Room room, List<Player> players, String hostId) {
         throw new IllegalStateException("Game has already started");
     }
 

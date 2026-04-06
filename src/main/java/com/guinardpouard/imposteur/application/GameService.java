@@ -5,6 +5,8 @@ import com.guinardpouard.imposteur.domain.model.*;
 import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
+import com.guinardpouard.imposteur.domain.port.ApiWordProvider;
+import com.guinardpouard.imposteur.domain.service.WordSelector;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,25 +22,30 @@ public class GameService {
     private final GamePublisher gamePublisher;
     private final PrivateRoomUpdateMapper privateRoomUpdateMapper;
     private final RoomUpdatedMapper roomUpdatedMapper;
+    private final WordSelector wordSelector;
 
     public GameService(RoomRepository roomRepository, GamePublisher gamePublisher,
-                       PrivateRoomUpdateMapper privateRoomUpdateMapper, RoomUpdatedMapper roomUpdatedMapper) {
+                       PrivateRoomUpdateMapper privateRoomUpdateMapper, RoomUpdatedMapper roomUpdatedMapper,
+                       ApiWordProvider apiWordProvider) {
         this.roomRepository = roomRepository;
         this.gamePublisher = gamePublisher;
         this.privateRoomUpdateMapper = privateRoomUpdateMapper;
         this.roomUpdatedMapper = roomUpdatedMapper;
+        this.wordSelector = new WordSelector(apiWordProvider);
     }
 
     public void startGame(String roomId, String hostId) {
         Room room = getRoomByRoomId(roomId);
         log.info("Starting game for room {}", room.getRoomId());
 
-        WordPair wordPair = getWordPair();
-        room.startGame(hostId, wordPair);
+        room.startGame(hostId);
 
         gamePublisher.publishGameStarted(
                 roomUpdatedMapper.toMessage(room)
         );
+
+        WordPair wordPair = getWordPair(room);
+        room.startNextRound(hostId, wordPair);
 
         for (Map.Entry<PlayerId, PlayerRoundState> state : room.getStates().entrySet()) {
             gamePublisher.sendWordToPlayer(
@@ -57,7 +64,7 @@ public class GameService {
         Room room = getRoomByRoomId(roomId);
         log.info("Starting next round for room {}", room.getRoomId());
 
-        WordPair wordPair = getWordPair();
+        WordPair wordPair = getWordPair(room);
         room.startNextRound(hostId, wordPair);
 
         for (Map.Entry<PlayerId, PlayerRoundState> state : room.getStates().entrySet()) {
@@ -78,8 +85,8 @@ public class GameService {
                 .orElseThrow(() -> new IllegalArgumentException("Room does not exist"));
     }
 
-    private @NonNull WordPair getWordPair() {
-        return new WordPair("Pomme", "Avion");
+    private @NonNull WordPair getWordPair(Room room) {
+        return wordSelector.select(room.getCurrentGame());
     }
 
 }

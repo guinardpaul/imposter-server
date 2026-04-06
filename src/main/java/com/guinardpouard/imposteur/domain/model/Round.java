@@ -21,7 +21,7 @@ public class Round {
         for (Player player : players) {
             boolean isImpostor = player.id().equals(impostor.id());
 
-            String word = isImpostor ? wordPair.impostorWord() : wordPair.commonWord();
+            String word = isImpostor ? wordPair.getImpostorWord() : wordPair.getCommonWord();
 
             states.put(
                     player.id(),
