@@ -36,8 +36,4 @@ public class GameSession {
         }
     }
 
-    public Set<Integer> getUsedWordIndexes() {
-        return Collections.unmodifiableSet(usedWordIndexes);
-    }
-
 }

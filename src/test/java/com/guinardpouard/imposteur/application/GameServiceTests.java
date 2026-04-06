@@ -7,6 +7,7 @@ import com.guinardpouard.imposteur.application.port.GamePublisher;
 import com.guinardpouard.imposteur.application.port.RoomRepository;
 import com.guinardpouard.imposteur.application.mapper.PrivateRoomUpdateMapper;
 import com.guinardpouard.imposteur.application.event.PrivateRoomUpdatedMessage;
+import com.guinardpouard.imposteur.domain.model.WordPair;
 import com.guinardpouard.imposteur.domain.port.ApiWordProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,6 +50,7 @@ class GameServiceTests {
         room.join(Player.player("id3","p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
         when(mockPrivateRoomUpdateMapper.toMessage(any(), any(), any())).thenCallRealMethod();
+        when(mockApiWordProvider.findAll()).thenReturn(List.of(new WordPair("a", "b")));
 
         gameService.startGame(room.getRoomId(), "hostConnectionId");
 
@@ -71,7 +74,7 @@ class GameServiceTests {
 
         assertThatThrownBy(() -> gameService.startNextRound(room.getRoomId(), "hostConnectionId"))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Game not started");
+                .hasMessageContaining("Game not started yet");
     }
 
     @Test
@@ -82,6 +85,7 @@ class GameServiceTests {
         room.join(Player.player("id3","p3"));
         when(mockRoomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
         when(mockPrivateRoomUpdateMapper.toMessage(any(), any(), any())).thenCallRealMethod();
+        when(mockApiWordProvider.findAll()).thenReturn(List.of(new WordPair("a", "b")));
         gameService.startGame(room.getRoomId(), "hostConnectionId");
 
         gameService.startNextRound(room.getRoomId(), "hostConnectionId");

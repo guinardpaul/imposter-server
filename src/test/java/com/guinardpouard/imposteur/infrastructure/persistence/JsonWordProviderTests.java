@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonWordProviderTests {
 
+
     @Test
     void should_return_wordPair() {
         ApiWordProvider provider = new JsonWordProvider();
@@ -18,6 +19,15 @@ class JsonWordProviderTests {
         assertThat(list).hasSize(1);
         assertThat(list.getFirst().commonWord()).isNotNull();
         assertThat(list.getFirst().impostorWord()).isNotNull();
+    }
+
+    @Test
+    void should_return_all_words () {
+        JsonWordProvider provider = new JsonWordProvider();
+        provider.loadWords();
+        List<WordPair> list = provider.findAll();
+
+        assertThat(list).hasSize(6);
     }
 
 }

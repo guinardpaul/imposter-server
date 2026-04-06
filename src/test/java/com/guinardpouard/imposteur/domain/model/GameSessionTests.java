@@ -20,6 +20,7 @@ class GameSessionTests {
         players.add(p3);
 
         GameSession gameSession = new GameSession(players);
+        gameSession.startNextRound(new WordPair("a", "b"));
         assertThat(gameSession.getCurrentRound()).isNotNull();
 
         gameSession.startNextRound(new WordPair("Cheval", "Voiture"));

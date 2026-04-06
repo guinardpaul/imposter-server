@@ -16,12 +16,12 @@ import java.util.List;
 public class JsonWordProvider implements ApiWordProvider {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private WordMapper wordMapper = new WordMapper();
+    private final WordMapper wordMapper = new WordMapper();
     private List<WordEntry> allWords;
 
     @PostConstruct
     public void loadWords() {
-        try (InputStream is = new ClassPathResource("words.json").getInputStream();) {
+        try (InputStream is = new ClassPathResource("words.json").getInputStream()) {
             allWords = objectMapper.readValue(is, new TypeReference<>() {
             });
         } catch (IOException e) {

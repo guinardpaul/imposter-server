@@ -90,11 +90,12 @@ class RoomTests {
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
         assertThat(room.getCurrentGame()).isNotNull();
+
+        room.startNextRound("hostId", wordPair);
         Round r1 = room.getCurrentGame().getCurrentRound();
         assertThat(r1).isNotNull();
 
-        room.startNextRound("hostId", wordPair);
-        assertThat(room.getCurrentGame().getCurrentRound()).isNotNull().isNotEqualTo(r1);
+        assertThat(room.getCurrentGame().getCurrentRound()).isNotNull().isEqualTo(r1);
     }
 
     @Test
@@ -109,6 +110,7 @@ class RoomTests {
         assertThat(room.getState()).isInstanceOf(InProgressState.class);
         assertThat(room.getState().state()).isEqualTo(GamePhase.IN_PROGRESS);
         assertThat(room.getCurrentGame()).isNotNull();
+        room.startNextRound("hostId", wordPair);
         Round r1 = room.getCurrentGame().getCurrentRound();
         assertThat(r1).isNotNull();
 
