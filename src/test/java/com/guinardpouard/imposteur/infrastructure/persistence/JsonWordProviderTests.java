@@ -17,8 +17,8 @@ class JsonWordProviderTests {
         List<WordPair> list = provider.getWords(1);
 
         assertThat(list).hasSize(1);
-        assertThat(list.getFirst().commonWord()).isNotNull();
-        assertThat(list.getFirst().impostorWord()).isNotNull();
+        assertThat(list.getFirst().getCommonWord()).isNotNull();
+        assertThat(list.getFirst().getImpostorWord()).isNotNull();
     }
 
     @Test
